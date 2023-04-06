@@ -9,13 +9,13 @@ class Coin {
     xPos = x;
     yPos = y;
     collected = false;
-    sprite = loadImage("coin.gif")
+    sprite = loadImage("coin.gif");
   }
 
   //Display Coin
   void display() {
     imageMode(CENTER);
-    image(sprite, x, y);
+    image(sprite, xPos, yPos);
   }
 
   //Function to collect coin

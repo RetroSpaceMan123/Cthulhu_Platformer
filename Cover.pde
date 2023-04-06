@@ -15,6 +15,6 @@ class Cover {
   void display() {
     rectMode(CENTER);
     fill(Color);
-    rect(x, y, w, h);
+    rect(xPos, yPos, coverWidth, coverHeight);
   }
 };

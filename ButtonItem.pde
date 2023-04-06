@@ -5,7 +5,7 @@ class ButtonItem {
   Door door;
 
   //Constructor
-  Platform(float x, float y, float w, float h, color c, Door d) {
+  ButtonItem(float x, float y, float w, float h, color c, Door d) {
     xPos = x;
     yPos = y;
     buttonItemWidth = w;
@@ -17,7 +17,7 @@ class ButtonItem {
   void display() {
     rectMode(CENTER);
     fill(Color);
-    rect(x, y, w, h);
+    rect(xPos, yPos, buttonItemWidth, buttonItemHeight);
   }
 
   void pressed() {

@@ -5,7 +5,7 @@ class Door {
   boolean closed;
 
   //Constructor
-  Platform(float x, float y, float w, float h, color c) {
+  Door(float x, float y, float w, float h, color c) {
     xPos = x;
     yPos = y;
     doorWidth = w;
@@ -22,7 +22,7 @@ class Door {
     if (!closed) {
       rectMode(CENTER);
       fill(Color);
-      rect(x, y, w, h);
+      rect(xPos, yPos, doorWidth, doorHeight);
     }
   }
 };

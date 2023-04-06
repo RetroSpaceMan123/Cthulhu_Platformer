@@ -14,7 +14,7 @@ class Level {
     coins = cn;
     platforms = pf;
     covers = cv;
-    buttonItem = bt;
+    buttonItems = bt;
     enemies = em;
     player = pl;
     cthulhu = ct;

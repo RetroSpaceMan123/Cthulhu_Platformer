@@ -11,6 +11,6 @@ class Enemy {
 
   void display() {
     imageMode(CENTER);
-    image(sprite, x, y);
+    image(sprite, xPos, yPos);
   }
 };

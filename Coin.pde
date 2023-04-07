@@ -2,20 +2,18 @@
 class Coin {
   float xPos, yPos;
   boolean collected;
-  PImage sprite;
+  Sprite newCoin;
 
   //Constructor
   Coin(float x, float y) {
     xPos = x;
     yPos = y;
     collected = false;
-    sprite = loadImage("coin.gif");
   }
 
   //Display Coin
   void display() {
     imageMode(CENTER);
-    image(sprite, xPos, yPos);
   }
 
   //Function to collect coin

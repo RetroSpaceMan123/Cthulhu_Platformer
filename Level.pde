@@ -49,6 +49,5 @@ class Level {
       enemies[i].display();
     }
 
-    player.display();
   }
 };

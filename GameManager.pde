@@ -8,8 +8,8 @@ class GameManager {
   // if player is in cover
   boolean inCover;
 
-  // if Cthulhu is peaking
-  boolean cthulhuPeaking;
+  // if Cthulhu is peaeing
+  boolean cthulhuPeeking;
 
   GameManager(Level[] l, UI[] u) {
     levels = l;
@@ -17,7 +17,7 @@ class GameManager {
     paused = false;
     gameOver = false;
     inConver = false;
-    cthulhuPeaking = false;
+    cthulhuPeeking = false;
   }
 
   void display() {
@@ -80,9 +80,9 @@ class GameManager {
     inCover = cover;
   }
 
-  // peaking condition if Cthulhu is peaking or not
-  void setPeaking(boolean p){
-    cthulhuPeaking = p;
+  // peeking condition if Cthulhu is peeking or not
+  void setPeeking(boolean p){
+    cthulhuPeeking = p;
   }
 
 };

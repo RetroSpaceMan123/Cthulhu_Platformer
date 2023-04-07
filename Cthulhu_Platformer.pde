@@ -47,12 +47,12 @@ background(255);
 player.display();
 GameManager.display();
 
-// Check for peaking
-if (player.isPeaking()) {
-GameManager.setPeaking(true);
+// Check for peeking
+if (player.isPeeking()) {
+GameManager.setPeeking(true);
 }
 else{
-  GameManager.setPeaking(false;)
+  GameManager.setPeeking(false;)
 }
 
 // Check for cover

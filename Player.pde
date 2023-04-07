@@ -4,6 +4,9 @@ class Player {
   float xPos, yPos, speed = 2.5f, jumpForce = 20.0f;
   PImage sprite;
   PImage[] sprites;
+  
+  // added variable for checking if Cthulhu is peaking
+  boolean peaking = false; 
 
   // Loading Sprites that are going to be used for the Player
   void loadSprites() {
@@ -46,4 +49,14 @@ class Player {
       xPos += speed;
     }
   }
+
+  // Notify GameManager class when the player is peaking
+  void peaking(boolean peak){
+    peaking = peak;
+  }
+
+  boolean isPeaking(){
+    return peaking;
+  }
+
 };

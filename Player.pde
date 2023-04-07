@@ -1,9 +1,11 @@
 //This is the object that the player controls throughout the game
 class Player {
   int lives, coins;
-  float xPos, yPos, speed = 2.5f, jumpForce = 20.0f;
+  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = 98.1, dt = 1/frameRate, speed = 25f, jumpForce = 20.0f;
   PImage sprite;
   PImage[] sprites;
+  // added variable for checking if Cthulhu is peaking
+  boolean peaking = false;
 
   // Loading Sprites that are going to be used for the Player
   void loadSprites() {
@@ -41,9 +43,28 @@ class Player {
   //Move the player
   void move() {
     if (key == 'a' || keyCode == LEFT) {
-      xPos -= speed;
+      vx = -speed;
     } else if (key == 'd' || keyCode == RIGHT) {
-      xPos += speed;
+      vx = speed;
+    } else if (key == ' ') {
+      vy = -jumpForce;
     }
+  }
+
+  // Notify GameManager class when the player is peaking
+  void peaking(boolean peak) {
+    peaking = peak;
+  }
+
+  boolean isPeaking() {
+    return peaking;
+  }
+
+  //Physics for Player
+  void physics() {
+    vx += ax * dt;
+    vy += ay * dt;
+    xPos += vx * dt + (ax * dt * dt * 0.5);
+    yPos += vy * dt + (ay * dt * dt * 0.5);
   }
 };

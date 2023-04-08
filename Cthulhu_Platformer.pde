@@ -47,7 +47,7 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (key == 'a' || key == 'd' || key == LEFT || key == RIGHT) {
+  if (key == 'a' || key == 'd' || keyCode == LEFT || keyCode == RIGHT) {
     player.walking = false;
     player.vx = 0;
   }

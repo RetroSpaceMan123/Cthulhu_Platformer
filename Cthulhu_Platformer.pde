@@ -3,17 +3,25 @@
 
 Player player;
 PImage bckg;
+Coin[] coins;
 
 void setup() {
   size(800, 800);
   player = new Player(3, 0, width/2, height/2);
   frameRate(50);
   bckg = loadImage("background1.png");
+  coins = new Coin[3];
+  coins[0] = new Coin(50, 50);
+  coins[1] = new Coin(150, 50);
+  coins[2] = new Coin(250, 50);
 }
 
 void draw() {
   background(255);
   player.physics();
+  for (int i = 0; i < coins.length; i++) {
+    coins[i].display();
+  }
   player.display();
   if (player.walking == false || keyPressed == false) {
     player.display();

@@ -16,7 +16,7 @@ class GameManager {
     uis = u;
     paused = false;
     gameOver = false;
-    inConver = false;
+    inCover = false;
     cthulhuPeeking = false;
   }
 
@@ -56,10 +56,10 @@ class GameManager {
 
   // Pause Screen Handler
   void togglePause(){
-    pause = !paused;
+    paused = !paused;
     if (paused){
       // haven't implemented func yet but this is the idea
-      uis[currentUI].showPauseScreen();
+      //uis[currentUI].showPauseScreen();
     }
     else{
       // same situation as comment above

@@ -1,15 +1,15 @@
 //This is the object that the player controls throughout the game
 class Player {
   int lives, coins;
-  int f; //frame counter for idle
+  int f = 0; //frame counter for idle
   int g; //frame counter for walk
   int h; //frame counter for jump
-  boolean walking = false;
-  float xPos, yPos, speed = 4f, jumpForce = 20.0f;
+  boolean walking = false, jumping = false;
+  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 2.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump;
 
- // added variable for checking if Cthulhu is peaking
-  boolean peeking = false; 
+  // added variable for checking if Cthulhu is peaking
+  boolean peeking = false;
 
   // Loading Sprites that are going to be used for the Player
   void loadSprites() {
@@ -26,6 +26,7 @@ class Player {
     yPos = 0;
     f = 0;
     g = 0;
+    h = 0;
     loadSprites();
   }
 
@@ -39,41 +40,55 @@ class Player {
   }
 
   //Displays the player
-  void idleDisplay() {
+  void display() {
     imageMode(CENTER);
+    if (jumping) {
+      image(jump.get(h), xPos, yPos, 50, 50);
+    } else if (walking) {
+      image(walk.get(g), xPos, yPos, 50, 50);
+    } else {
       image(idle.get(f), xPos, yPos, 50, 50);
     }
-
-  void walkDisplay(){
-    imageMode(CENTER);
-    image(walk.get(g), xPos, yPos, 50, 50);
   }
-  
+
   //Move the player
   void move() {
     if (key == 'a' || keyCode == LEFT) {
-      xPos -= speed;
+      vx = -speed;
       walking = true;
     } else if (key == 'd' || keyCode == RIGHT) {
-      xPos += speed;
+      vx = speed;
       walking = true;
+    } else if (key == ' ' && !jumping) {
+      vy = -jumpForce;
     }
-    else {
-      walking = false;
+  }
+
+  void physics() {
+    vx += ax;
+    vy += ay;
+
+    if (yPos + 25 > 3 * height/4) {
+      yPos = 3 * height/4 - 25;
+      ay = 0;
+      jumping = false;
+    } else {
+      ay = 0.25;
+      jumping = true;
     }
+
+
+    xPos += vx;
+    yPos += vy;
+    println(ay + " " + jumping + " " + key);
   }
 
   // Notify GameManager class when the player is peaking
-  void peeking(boolean peek){
+  void peeking(boolean peek) {
     peeking = peek;
   }
 
-  boolean isPeeking(){
+  boolean isPeeking() {
     return peeking;
   }
-
-  void jump(){
-
-  }
-
 };

@@ -1,4 +1,3 @@
-
 //This is the object that the player controls throughout the game
 class Player {
   int lives, coins;
@@ -100,5 +99,4 @@ class Player {
   boolean isPeeking() {
     return peeking;
   }
-  
 };

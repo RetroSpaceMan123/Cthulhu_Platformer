@@ -5,11 +5,11 @@ class Player {
   int g; //frame counter for walk
   int h; //frame counter for jump
   boolean walking = false;
-  float xPos, yPos, speed = 4f, jumpForce = 20.0f;
+  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = 10, speed = 50f, jumpForce = 40.0f, dt = 1/frameRate;
   Sprite idle, walk, jump;
 
- // added variable for checking if Cthulhu is peaking
-  boolean peeking = false; 
+  // added variable for checking if Cthulhu is peaking
+  boolean peeking = false;
 
   // Loading Sprites that are going to be used for the Player
   void loadSprites() {
@@ -39,41 +39,46 @@ class Player {
   }
 
   //Displays the player
-  void idleDisplay() {
+  void display() {
     imageMode(CENTER);
+    if (vy == 0) {
+      image(jump.get(h), xPos, yPos, 50, 50);
+    } else if (walking) {
+      image(walk.get(g), xPos, yPos, 50, 50);
+    } else {
       image(idle.get(f), xPos, yPos, 50, 50);
     }
-
-  void walkDisplay(){
-    imageMode(CENTER);
-    image(walk.get(g), xPos, yPos, 50, 50);
   }
-  
+
   //Move the player
   void move() {
     if (key == 'a' || keyCode == LEFT) {
-      xPos -= speed;
+      vx = -speed;
       walking = true;
     } else if (key == 'd' || keyCode == RIGHT) {
-      xPos += speed;
+      vx = speed;
       walking = true;
+    } else if (key == ' ') {
+      vy = -jumpForce;
     }
-    else {
-      walking = false;
-    }
+  }
+
+  void physics() {
+    vx += ax * dt;
+    vy += ay * dt;
+    xPos += vx * dt + ax * dt * dt/2;
+    yPos += vy * dt + ay * dt * dt/2;
   }
 
   // Notify GameManager class when the player is peaking
-  void peeking(boolean peek){
+  void peeking(boolean peek) {
     peeking = peek;
   }
 
-  boolean isPeeking(){
+  boolean isPeeking() {
     return peeking;
   }
 
-  void jump(){
-
+  void jump() {
   }
-
 };

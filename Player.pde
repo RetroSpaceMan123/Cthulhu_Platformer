@@ -41,7 +41,7 @@ class Player {
   //Displays the player
   void display() {
     imageMode(CENTER);
-    if (vy == 0) {
+    if (vy != 0) {
       image(jump.get(h), xPos, yPos, 50, 50);
     } else if (walking) {
       image(walk.get(g), xPos, yPos, 50, 50);

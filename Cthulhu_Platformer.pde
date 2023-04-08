@@ -4,6 +4,7 @@
 Player player;
 PImage bckg;
 Coin[] coins;
+Platform platform;
 
 void setup() {
   size(800, 800);
@@ -14,10 +15,12 @@ void setup() {
   coins[0] = new Coin(50, 50);
   coins[1] = new Coin(150, 50);
   coins[2] = new Coin(250, 50);
+  platform = new Platform(400, 600, 300, 100, color(155));
 }
 
 void draw() {
   background(255);
+  player.checkPlatform(platform);
   player.physics();
   for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
@@ -25,6 +28,7 @@ void draw() {
     }
     coins[i].display();
   }
+  platform.display();
   player.display();
   if (player.walking == false || keyPressed == false) {
     player.display();

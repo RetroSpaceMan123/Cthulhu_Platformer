@@ -4,7 +4,7 @@ class Player {
   int f = 0; //frame counter for idle
   int g; //frame counter for walk
   int h; //frame counter for jump
-  boolean walking = false, jumping = false;
+  boolean walking = false, jumping = false, isOnPlatform;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 2.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump;
 
@@ -64,19 +64,24 @@ class Player {
     }
   }
 
+  void checkPlatform(Platform platform) {
+    boolean y = (yPos + 25 > platform.yPos - platform.platformHeight/2);
+    boolean x = (xPos > platform.xPos - platform.platformWidth/2 && xPos < platform.xPos + platform.platformWidth/2);
+    isOnPlatform = (x && y);
+    if (isOnPlatform) yPos = platform.yPos - platform.platformHeight/2 - 25;
+  }
+
   void physics() {
     vx += ax;
     vy += ay;
 
-    if (yPos + 25 > height/2) {
-      yPos = height/2 - 25;
+    if (isOnPlatform) {
       ay = 0;
       jumping = false;
     } else {
       ay = 0.25;
       jumping = true;
     }
-
 
     xPos += vx;
     yPos += vy;

@@ -1,4 +1,3 @@
-
 //This is the object that the player controls throughout the game
 class Player {
   int lives, coins;
@@ -6,7 +5,7 @@ class Player {
   int g; //frame counter for walk
   int h; //frame counter for jump
   int j; //frame counter for run
-  boolean walking = false, jumping = false, running = false, isOnPlatform;
+  boolean walking = false, jumping = false, running = false;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run;
 
@@ -74,24 +73,19 @@ class Player {
     }
   }
 
-  void checkPlatform(Platform platform) {
-    boolean y = (yPos + 25 > platform.yPos - platform.platformHeight/2);
-    boolean x = (xPos > platform.xPos - platform.platformWidth/2 && xPos < platform.xPos + platform.platformWidth/2);
-    isOnPlatform = (x && y);
-    if (isOnPlatform) yPos = platform.yPos - platform.platformHeight/2 - 25;
-  }
-
   void physics() {
     vx += ax;
     vy += ay;
 
-    if (isOnPlatform) {
+    if (yPos + 25 > height/2) {
+      yPos = height/2 - 25;
       ay = 0;
       jumping = false;
     } else {
       ay = 0.25;
       jumping = true;
     }
+
 
     xPos += vx;
     yPos += vy;
@@ -105,5 +99,4 @@ class Player {
   boolean isPeeking() {
     return peeking;
   }
-  
 };

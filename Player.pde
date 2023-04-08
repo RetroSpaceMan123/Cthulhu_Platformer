@@ -68,8 +68,8 @@ class Player {
     vx += ax;
     vy += ay;
 
-    if (yPos + 25 > 3 * height/4) {
-      yPos = 3 * height/4 - 25;
+    if (yPos + 25 > height/2) {
+      yPos = height/2 - 25;
       ay = 0;
       jumping = false;
     } else {
@@ -80,7 +80,6 @@ class Player {
 
     xPos += vx;
     yPos += vy;
-    println(ay + " " + jumping + " " + key);
   }
 
   // Notify GameManager class when the player is peaking

@@ -20,6 +20,9 @@ void draw() {
   background(255);
   player.physics();
   for (int i = 0; i < coins.length; i++) {
+    if (frameCount % 6 == 0) {
+      coins[i].i = (coins[i].i+1)%10;
+    }
     coins[i].display();
   }
   player.display();

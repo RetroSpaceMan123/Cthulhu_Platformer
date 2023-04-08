@@ -10,7 +10,7 @@ class Coin {
     yPos = y;
     i = 0;
     collected = false;
-    coin = new Sprite("goldCoin", 9);
+    coin = new Sprite("goldCoin", 10);
   }
 
   //Display Coin

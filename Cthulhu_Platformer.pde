@@ -22,6 +22,7 @@ void draw() {
   background(255);
   player.checkPlatform(platform);
   player.physics();
+  System.out.println("vy: " + player.vy);
   for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
       coins[i].i = (coins[i].i+1)%10;
@@ -30,7 +31,7 @@ void draw() {
   }
   platform.display();
   player.display();
-  if (player.walking == false && player.running == false || keyPressed == false) {
+  if (player.walking == false && player.running == false && player.isOnPlatform) {
     player.display();
     if (frameCount % 15 == 0) {
       player.f = (player.f+1)%4;
@@ -56,16 +57,37 @@ void draw() {
       
 
 void keyPressed() {
-  player.move();
+  if(key == 'a' || keyCode == LEFT) {
+    player.left = true;
+  }
+  if(key == 'd' || keyCode == RIGHT) {
+    player.right = true;
+  }
+ if(keyCode == SHIFT && !player.jumping) {
+   player.running = true;
+   player.speed = 3f;
+ }
+ if (key == ' ' && !player.jumping) {
+      player.vy = -player.jumpForce;
+      player.jumping = true;
+ }
+ 
+ player.move();
 }
 
 void keyReleased() {
-  if (key == 'a' || key == 'd' || keyCode == LEFT || keyCode == RIGHT || keyCode == SHIFT) {
-    player.walking = false;
+  if(key == 'a' || keyCode == LEFT) {
+    player.left = false;
+  }
+  if(key == 'd' || keyCode == RIGHT) {
+    player.right = false;
+  }
+  if(keyCode == SHIFT) {
     player.running = false;
     player.speed = 1.5f;
-    player.vx = 0;
   }
+  
+  player.move();
 }
 /*Player player;
  GameManager gameManager;

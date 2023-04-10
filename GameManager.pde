@@ -8,16 +8,16 @@ class GameManager {
   // if player is in cover
   boolean inCover;
 
-  // if Cthulhu is peaking
-  boolean cthulhuPeaking;
+  // if Cthulhu is peaeing
+  boolean cthulhuPeeking;
 
   GameManager(Level[] l, UI[] u) {
     levels = l;
     uis = u;
     paused = false;
     gameOver = false;
-    inConver = false;
-    cthulhuPeaking = false;
+    inCover = false;
+    cthulhuPeeking = false;
   }
 
   void display() {
@@ -26,14 +26,16 @@ class GameManager {
 
     //check to see if player is in cover
     // have to check if implemented isPlayerInCover function
-    // inCover = levels[currentLevel].isPlayerInCover(player.xPos, player.yPos);
-    if (inCover) {
-      // haven't implemented the showCoverMessage func yet
-      // uis[currentUI].showCoverMessage();
-    } else {
-      // same for this one, as abpve
-      //uis[currentUI].hideCoverMessage();
-    }
+   // inCover = levels[currentLevel].isPlayerInCover(player.xPos, player.yPos);
+   if(inCover){
+    // haven't implemented the showCoverMessage func yet
+   // uis[currentUI].showCoverMessage();
+   }
+   else {
+    // same for this one, as abpve
+    //uis[currentUI].hideCoverMessage();
+   }
+  
   }
 
   //Switch between levels
@@ -53,30 +55,34 @@ class GameManager {
   }
 
   // Pause Screen Handler
-  void togglePause() {
-    pause = !paused;
-    if (paused) {
+  void togglePause(){
+    paused = !paused;
+    if (paused){
       // haven't implemented func yet but this is the idea
-      uis[currentUI].showPauseScreen();
-    } else {
+      //uis[currentUI].showPauseScreen();
+    }
+    else{
       // same situation as comment above
       //uis[currentUI].hidePauseScreen();
     }
+
   }
 
   // Game State Handler
-  void gameOver() {
+  void gameOver(){
     gameOver = true;
     // haven't implemented func yet but this is the idea
     //uis[currentUI].showGameOverScreen();
   }
 
   // in cover condition if player's position is taking cover.
-  void setInCover(boolean cover) {
+  void setInCover(boolean cover){
     inCover = cover;
   }
-  // peaking condition if Cthulhu is peaking or not
-  void setPeaking(boolean p) {
-    cthulhuPeaking = p;
+
+  // peeking condition if Cthulhu is peeking or not
+  void setPeeking(boolean p){
+    cthulhuPeeking = p;
   }
+
 };

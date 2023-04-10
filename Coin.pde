@@ -1,26 +1,24 @@
-//Players need to collect all of the coins to progress to the next level
 class Coin {
   float xPos, yPos;
   boolean collected;
-  PImage sprite;
+  Sprite coin;
+  int i;
 
   //Constructor
   Coin(float x, float y) {
     xPos = x;
     yPos = y;
+    i = 0;
     collected = false;
-    sprite = loadImage("coin.gif");
+    coin = new Sprite("goldCoin", 10);
   }
 
   //Display Coin
   void display() {
+    if(collected == false){
     imageMode(CENTER);
-    image(sprite, xPos, yPos);
+    image(coin.get(i), xPos, yPos, 50, 50);
+    }
   }
 
-  //Function to collect coin
-  int collect() {
-    collected = true;
-    return 1;
-  }
 };

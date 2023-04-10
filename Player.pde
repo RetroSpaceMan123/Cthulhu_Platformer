@@ -1,19 +1,24 @@
+
 //This is the object that the player controls throughout the game
 class Player {
   int lives, coins;
-  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = 98.1, dt = 1/frameRate, speed = 25f, jumpForce = 20.0f;
-  PImage sprite;
-  PImage[] sprites;
+  int f = 0; //frame counter for idle
+  int g; //frame counter for walk
+  int h; //frame counter for jump
+  int j; //frame counter for run
+  boolean walking = false, jumping = false, running = false, isOnPlatform;
+  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
+  Sprite idle, walk, jump, run;
+
   // added variable for checking if Cthulhu is peaking
-  boolean peaking = false;
+  boolean peeking = false;
 
   // Loading Sprites that are going to be used for the Player
   void loadSprites() {
-    sprites = new PImage[3];
-    sprites[0] = loadImage("player_idle.gif");
-    sprites[1] = loadImage("player_walk.gif");
-    sprites[2] = loadImage("player_death.gif");
-    sprite = sprites[0];
+    idle = new Sprite("player_idle_", 4);
+    walk = new Sprite("player_walk_", 5);
+    jump = new Sprite("player_jump_", 6);
+    run = new Sprite("player_run_", 8);
   }
 
   //Default Constructor
@@ -22,6 +27,10 @@ class Player {
     coins = 0;
     xPos = 0;
     yPos = 0;
+    f = 0;
+    g = 0;
+    h = 0;
+    j = 0;
     loadSprites();
   }
 
@@ -37,34 +46,64 @@ class Player {
   //Displays the player
   void display() {
     imageMode(CENTER);
-    image(sprite, xPos, yPos);
+    if (jumping) {
+      image(jump.get(h), xPos, yPos, 50, 50); 
+    } else if(running){
+        image(run.get(j), xPos, yPos, 50, 50);
+    } else if (walking) {
+      image(walk.get(g), xPos, yPos, 50, 50);
+    } else {
+      image(idle.get(f), xPos, yPos, 50, 50);
+    }
   }
 
   //Move the player
   void move() {
-    if (key == 'a' || keyCode == LEFT) {
+    if(keyCode == SHIFT){
+      running = true;
+      speed = 3f;
+    }
+    else if (key == 'a' || keyCode == LEFT) {
       vx = -speed;
+      walking = true;
     } else if (key == 'd' || keyCode == RIGHT) {
       vx = speed;
-    } else if (key == ' ') {
+      walking = true;
+    } else if (key == ' ' && !jumping) {
       vy = -jumpForce;
     }
   }
 
-  // Notify GameManager class when the player is peaking
-  void peaking(boolean peak) {
-    peaking = peak;
+  void checkPlatform(Platform platform) {
+    boolean y = (yPos + 25 > platform.yPos - platform.platformHeight/2 && yPos - 25 < platform.yPos + platform.platformHeight/2);
+    boolean x = (xPos > platform.xPos - platform.platformWidth/2 && xPos < platform.xPos + platform.platformWidth/2);
+    isOnPlatform = (x && y);
+    if (isOnPlatform) yPos = platform.yPos - platform.platformHeight/2 - 25;
   }
 
-  boolean isPeaking() {
-    return peaking;
-  }
-
-  //Physics for Player
   void physics() {
-    vx += ax * dt;
-    vy += ay * dt;
-    xPos += vx * dt + (ax * dt * dt * 0.5);
-    yPos += vy * dt + (ay * dt * dt * 0.5);
+    vx += ax;
+    vy += ay;
+
+    if (isOnPlatform) {
+      ay = 0;
+      jumping = false;
+    } else {
+      ay = 0.25;
+      jumping = true;
+    }
+
+    xPos += vx;
+    yPos += vy;
   }
+
+  // Notify GameManager class when the player is peaking
+  void peeking(boolean peek) {
+    peeking = peek;
+  }
+
+  boolean isPeeking() {
+    return peeking;
+  }
+  
 };

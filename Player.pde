@@ -6,7 +6,7 @@ class Player {
   int g; //frame counter for walk
   int h; //frame counter for jump
   int j; //frame counter for run
-  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform;
+  boolean walking = false, jumping = false, running = false, isOnPlatform;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run;
 
@@ -59,26 +59,18 @@ class Player {
 
   //Move the player
   void move() {
-    
-    if(left) {
-      if(right) {
-        walking = false;
-        vx = 0;
-      } else {
-        walking = true;
-        vx = -speed;
-      }
-    } else if(right) {
-      walking = true;
-      vx = speed;
-    } else {
-      walking = false;
-      vx = 0;
+    if(keyCode == SHIFT){
+      running = true;
+      speed = 3f;
     }
-    
-    if(jumping) {
-      walking = false;
-      running = false;
+    else if (key == 'a' || keyCode == LEFT) {
+      vx = -speed;
+      walking = true;
+    } else if (key == 'd' || keyCode == RIGHT) {
+      vx = speed;
+      walking = true;
+    } else if (key == ' ' && !jumping) {
+      vy = -jumpForce;
     }
   }
 

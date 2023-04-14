@@ -105,7 +105,7 @@ time = 0;
   }
   
   player.isInCover = covered;
-  System.out.println(player.isInCover);
+  //System.out.println(player.isInCover);
   
   //death reset
   if(player.yPos > 850 && player.lives > 1) {
@@ -125,6 +125,7 @@ time = 0;
   }
   
   textSize(30);
+  fill(#FFFF00);
   text("coins: " + player.coins, 25, 100);
   fill(#FF0000);
   text("lives: " + player.lives, 25, 130);

@@ -27,13 +27,22 @@ class Coin {
   }
 
   void collect(){
-      coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
-      if((abs(player.xPos - xPos) <= 10 && abs(player.yPos - yPos) <= 10)) {
-        isCollected = true;
-        if(!coinSound.isPlaying()){
+    coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
+    
+    boolean collisionCheck = player.xPos - 25 <= xPos && player.xPos + 23 >= xPos;
+    collisionCheck &= player.yPos + 37 >= yPos && player.yPos - 34 <= yPos;
+    if(player.yPos >= yPos) {
+      collisionCheck &= dist(player.xPos, player.yPos, xPos, yPos) <= 35;
+    } else {
+      collisionCheck &= dist(player.xPos, player.yPos, xPos, yPos) <= 38;
+    }
+    
+    if(collisionCheck) {
+      isCollected = true;
+      player.coins++;
+      if(!coinSound.isPlaying()){
         coinSound.play();
-        }
-        player.coins++;
       }
+    }
   }
 }

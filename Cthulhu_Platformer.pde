@@ -24,6 +24,7 @@ float startTime;
 float currTime = 0;          // initialize the timer
 float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
+boolean gameOver;
 
 
 void setup() {
@@ -56,12 +57,13 @@ void setup() {
 
   Textbox[] textboxes = new Textbox[2];
   textboxes[0] = new Textbox(500, 50, 32, "Constantia-Bold-32.vlw", "Coins: ");
-  textboxes[1] = new Textbox(650, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
+  textboxes[1] = new Textbox(670, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
   Textbox textbox = new Textbox(65, 50, 32, "Constantia-Bold-32.vlw", "Pause");
   ButtonUI mainMenu = new ButtonUI(113, 40, 200, 42, color(100), new PImage(), textbox);
   ButtonUI[] buttons = new ButtonUI[1];
   buttons[0] = mainMenu;
   gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
+  gameOver = false;
 }
 
 void draw() {
@@ -188,7 +190,7 @@ void draw() {
     player.lives--;
   }
   //Update the in-game UI
-  gameUI.textboxes[0].Text = "Coins: " + player.coins;
+  gameUI.textboxes[0].Text = "Coins: " + player.coins + '/' + coins.length;
   gameUI.textboxes[1].Text = "Lives: " + player.lives;
   //Display the in-game UI
   gameUI.display();

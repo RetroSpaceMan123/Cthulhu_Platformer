@@ -11,7 +11,9 @@ class Cthulhu {
   Sprite ascending;
   Sprite descending;
   PImage staring;
-  int h, i;
+  int a, d;
+  boolean holdStare = false;
+  
 
   void loadSprites(){
     ascending = new Sprite("Cthulhu Ascending-", 12);
@@ -22,8 +24,8 @@ class Cthulhu {
   Cthulhu() {
     xPos = player.xPos;
     yPos = height/2 - 100;
-    h = 0;
-    i= 0;
+    a = 0;
+    d= 0;
     active = false;
     loadSprites();
     ascend = false;
@@ -33,14 +35,14 @@ class Cthulhu {
   void display() {
     if(ascend){
     imageMode(CENTER);
-    image(ascending.get(h), xPos, yPos, 600, 600);
+    image(ascending.get(a), xPos, yPos, 600, 600);
     /*if(!roar1.isPlaying()) {
     roar1.play(1, 0.1);
     }
     */
     }
     else if(descend) {
-      image(descending.get(i), xPos, yPos, 600, 600);
+      image(descending.get(d), xPos, yPos, 600, 600);
     }
   }
 };

@@ -26,7 +26,7 @@ float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
 
 
-  void setup() {
+void setup() {
   size(800, 800);
   music = new SoundFile(this, "mystery.mp3");
   coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
@@ -51,7 +51,7 @@ boolean pointReached; // cthulhu
 
 
   interval = random(9000, 10000); // generate a random interval between 9 and 10 seconds
-  startTime = 0; 
+  startTime = 0;
   savedTime = 0;
 
   Textbox[] textboxes = new Textbox[2];
@@ -72,7 +72,7 @@ void draw() {
 
 
 
-   currTime = millis();
+  currTime = millis();
   if (!cthulhu.active) {
 
 
@@ -125,9 +125,9 @@ void draw() {
       }
     }
   }
-  
-   cthulhu.display();
- 
+
+  cthulhu.display();
+
 
   time = 0;
 
@@ -153,24 +153,6 @@ void draw() {
     cover[i].display();
   }
   player.display();
-
- 
-
-
-
-
-
-
-
-
-
-
-  if (player.walking == false && player.running == false && player.isOnPlatform) {
-
-    if (frameCount % 40 == 0) {
-      cthulhu.h = (cthulhu.h+1)%12;
-    }
-  }
 
   if (player.vy != 0 || player.jumping == true) {
     if (frameCount % 10 == 0) {
@@ -239,15 +221,15 @@ void keyPressed() {
     player.right = true;
   }
 
- if(keyCode == SHIFT && !player.jumping) {
-   player.running = true;
-   player.speed = 3f;
- }
- if (key == ' ' && !player.jumping) {
-      player.vy = -player.jumpForce;
-      player.jumping = true;
-      //jump.play();
- }
+  if (keyCode == SHIFT && !player.jumping) {
+    player.running = true;
+    player.speed = 3f;
+  }
+  if (key == ' ' && !player.jumping) {
+    player.vy = -player.jumpForce;
+    player.jumping = true;
+    //jump.play();
+  }
 
   if (keyCode == SHIFT && !player.jumping) {
     player.running = true;

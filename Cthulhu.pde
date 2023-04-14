@@ -1,22 +1,46 @@
+import processing.sound.*;
+SoundFile roar2, stareSound;
+float timer;
+
 //Appears in random intervals in order to force player into cover
 class Cthulhu {
   float xPos, yPos;
   boolean active;
-  PImage[] sprites;
-  PImage sprite;
+  boolean ascend;
+  boolean descend;
+  Sprite ascending;
+  Sprite descending;
+  PImage staring;
+  int h, i;
 
-  Cthulhu(float x, float y) {
-    xPos = x;
-    yPos = y;
+  void loadSprites(){
+    ascending = new Sprite("Cthulhu Ascending-", 12);
+    descending = new Sprite("Cthulhu (Descending)-", 13);
+    staring = loadImage("Cthulhu_Stare.png");
+  }
+  
+  Cthulhu() {
+    xPos = player.xPos;
+    yPos = height/2 - 100;
+    h = 0;
+    i= 0;
     active = false;
-    sprites = new PImage[2];
-    sprites[0] = loadImage("cthulhu_rise.gif");
-    sprites[1] = loadImage("cthulhu_fall.gif");
-    sprite = sprites[0];
+    loadSprites();
+    ascend = false;
+    descend = false;
   }
 
   void display() {
+    if(ascend){
     imageMode(CENTER);
-    image(sprite, xPos, yPos);
+    image(ascending.get(h), xPos, yPos, 600, 600);
+    /*if(!roar1.isPlaying()) {
+    roar1.play(1, 0.1);
+    }
+    */
+    }
+    else if(descend) {
+      image(descending.get(i), xPos, yPos, 600, 600);
+    }
   }
 };

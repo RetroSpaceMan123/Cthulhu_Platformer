@@ -4,7 +4,6 @@ class ButtonUI {
   color Color;
   PImage sprite;
   Textbox textbox;
-  Runnable action;
 
   //Constructor
   ButtonUI(float x, float y, float w, float h, color c, PImage i, Textbox t) {
@@ -19,6 +18,10 @@ class ButtonUI {
 
   //Display Button
   void display() {
+    rectMode(CENTER);
+    fill(Color);
+    rect(xPos, yPos, ButtonWidth, ButtonHeight);
+    fill(255);
     imageMode(CENTER);
     image(sprite, xPos, yPos);
     textbox.display();

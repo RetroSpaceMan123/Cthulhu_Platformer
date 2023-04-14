@@ -70,17 +70,10 @@ void draw() {
    */
   background(bckg);
 
-
-
   currTime = millis();
   if (!cthulhu.active) {
-
-
     // check if the timer has reached the interval
     if (currTime >= startTime + interval) {
-
-
-      // do something
       cthulhu.active = true;
       cthulhu.ascend = true;
     }
@@ -127,16 +120,6 @@ void draw() {
   }
 
   cthulhu.display();
-
-
-  time = 0;
-
-  if (millis() > time + 10*1000) {
-    // 10 seconds has elapsed
-    time = millis();
-    cthulhu.ascend = true;
-    cthulhu.display();
-  }
 
   player.checkPlatform(platform);
   player.physics();

@@ -6,7 +6,7 @@ class Player {
   int g; //frame counter for walk
   int h; //frame counter for jump
   int j; //frame counter for run
-  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform;
+  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform, isInCover = false;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run;
 

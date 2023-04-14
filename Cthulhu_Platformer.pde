@@ -1,25 +1,49 @@
 //Main File
-
+import processing.sound.*;
+SoundFile music;
+SoundFile coinSound;
+SoundFile roar1;
 
 Player player;
+Cthulhu cthulhu;
 PImage bckg;
 Coin[] coins;
 Platform platform;
+int time;
 
 void setup() {
   size(800, 800);
+  music = new SoundFile(this, "mystery.mp3");
+  coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
+  roar1 = new SoundFile(Cthulhu_Platformer.this, "roar1.wav");
   player = new Player(3, 0, width/2, height/2);
+  cthulhu = new Cthulhu();
   frameRate(50);
   bckg = loadImage("background1.png");
+  bckg.resize(800, 800);
   coins = new Coin[3];
-  coins[0] = new Coin(50, 50);
-  coins[1] = new Coin(150, 50);
-  coins[2] = new Coin(250, 50);
+  time = 3000;
+  coins[0] = new Coin(400, 525);
+  coins[1] = new Coin(500, 525);
+  coins[2] = new Coin(550, 525);
   platform = new Platform(400, 600, 300, 100, color(155));
 }
 
 void draw() {
-  background(255);
+  /*if(!music.isPlaying()){
+  music.play(1); }
+  */
+  background(bckg);
+  
+time = 0;
+
+   if(millis() > time + 10*1000){
+      // 10 seconds has elapsed
+      time = millis();
+      cthulhu.ascend = true;
+      cthulhu.display();
+   }
+  
   player.checkPlatform(platform);
   player.physics();
   System.out.println("vy: " + player.vy);
@@ -29,9 +53,22 @@ void draw() {
     }
     coins[i].display();
   }
+  
   platform.display();
   player.display();
   if (player.walking == false && player.running == false && player.isOnPlatform) {
+  
+  if(frameCount % 40 == 0) {
+    cthulhu.h = (cthulhu.h+1)%12;
+  }
+  
+   if (player.vy != 0 || player.jumping == true) {
+      if (frameCount % 10 == 0) {
+        player.h = (player.h+1)%6;
+      }
+  }
+  if (player.walking == false && player.running == false) {
+
     player.display();
     if (frameCount % 15 == 0) {
       player.f = (player.f+1)%4;
@@ -46,13 +83,8 @@ void draw() {
     if (frameCount % 8 == 0) {
       player.g = (player.g+1)%5;
     } 
-  }
-  else if (player.vy != 0) {
-      if (frameCount % 10 == 0) {
-        player.h = (player.h+1)%6;
-      }
-  }
-      
+  }      
+}
 }
       
 
@@ -71,7 +103,7 @@ void keyPressed() {
       player.vy = -player.jumpForce;
       player.jumping = true;
  }
- 
+
  player.move();
 }
 

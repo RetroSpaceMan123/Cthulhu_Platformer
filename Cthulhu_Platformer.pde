@@ -13,6 +13,8 @@ Platform platform;
 Cover[] cover;
 boolean covered;
 int time;
+UI gameUI;
+boolean paused;
 
 void setup() {
   size(800, 800);
@@ -34,23 +36,31 @@ void setup() {
   cover  = new Cover[1];
   //cover[0] = new Cover(450, 470, 40, 80, 155);
   cover[0] = new Cover(300, 470, 40, 80, 155);
+  Textbox[] textboxes = new Textbox[2];
+  textboxes[0] = new Textbox(500, 50, 32, "Constantia-Bold-32.vlw", "Coins: ");
+  textboxes[1] = new Textbox(650, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
+  Textbox textbox = new Textbox(65, 50, 32, "Constantia-Bold-32.vlw", "Pause");
+  ButtonUI mainMenu = new ButtonUI(113, 40, 200, 42, color(100), new PImage(), textbox);
+  ButtonUI[] buttons = new ButtonUI[1];
+  buttons[0] = mainMenu;
+  gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
 }
 
 void draw() {
   /*if(!music.isPlaying()){
-  music.play(1); }
-  */
+   music.play(1); }
+   */
   background(bckg);
-  
-time = 0;
 
-   if(millis() > time + 10*1000){
-      // 10 seconds has elapsed
-      time = millis();
-      cthulhu.ascend = true;
-      cthulhu.display();
-   }
-  
+  time = 0;
+
+  if (millis() > time + 10*1000) {
+    // 10 seconds has elapsed
+    time = millis();
+    cthulhu.ascend = true;
+    cthulhu.display();
+  }
+
   player.checkPlatform(platform);
   player.physics();
   //System.out.println("vy: " + player.vy);
@@ -60,22 +70,23 @@ time = 0;
     }
     coins[i].display();
   }
-  
+
   platform.display();
-  for(int i = 0; i < cover.length; i++) {
+  for (int i = 0; i < cover.length; i++) {
     cover[i].display();
   }
   player.display();
   if (player.walking == false && player.running == false && player.isOnPlatform) {
-  
-  if(frameCount % 40 == 0) {
-    cthulhu.h = (cthulhu.h+1)%12;
+
+    if (frameCount % 40 == 0) {
+      cthulhu.h = (cthulhu.h+1)%12;
+    }
   }
-  
-   if (player.vy != 0 || player.jumping == true) {
-      if (frameCount % 10 == 0) {
-        player.h = (player.h+1)%6;
-      }
+
+  if (player.vy != 0 || player.jumping == true) {
+    if (frameCount % 10 == 0) {
+      player.h = (player.h+1)%6;
+    }
   }
   if (player.walking == false && player.running == false) {
 
@@ -83,32 +94,29 @@ time = 0;
     if (frameCount % 15 == 0) {
       player.f = (player.f+1)%4;
     }
-  } 
-  else if (player.running == true) {
-    if(frameCount % 10 == 0){
+  } else if (player.running == true) {
+    if (frameCount % 10 == 0) {
       player.j = (player.j+1)%8;
     }
-  }
-  else if (player.walking == true) {
+  } else if (player.walking == true) {
     if (frameCount % 8 == 0) {
       player.g = (player.g+1)%5;
-    } 
-  }      
-}
+    }
+  }
   //cover logic
   covered = false;
- 
-  for(int i = 0; i < cover.length; i++) {
+
+  for (int i = 0; i < cover.length; i++) {
     boolean temp = player.xPos + 10 <= cover[i].xPos + cover[i].coverWidth && player.xPos - 15 >= cover[i].xPos;
     temp &= player.yPos - 18 >= cover[i].yPos && player.yPos + 10 <= cover[i].yPos + cover[i].coverHeight;
     covered |= temp;
   }
-  
+
   player.isInCover = covered;
   //System.out.println(player.isInCover);
-  
+
   //death reset
-  if(player.yPos > 850 && player.lives > 1) {
+  if (player.yPos > 850 && player.lives > 1) {
     player.coins = 0;
     player.lives--;
     player.xPos = width/2;
@@ -116,56 +124,64 @@ time = 0;
     player.vy = 1.5f;
     //time = 0;
     //cthulhu.ascend = false;
-   
-    for(int i = 0; i < coins.length; i++) {
+
+    for (int i = 0; i < coins.length; i++) {
       coins[i].isCollected = false;
     }
-  } else if(player.yPos > 850 && player.lives == 1) {
+  } else if (player.yPos > 850 && player.lives == 1) {
     player.lives--;
   }
-  
-  textSize(30);
-  fill(#FFFF00);
-  text("coins: " + player.coins, 25, 100);
-  fill(#FF0000);
-  text("lives: " + player.lives, 25, 130);
-  noFill();
+  //Update the in-game UI
+  gameUI.textboxes[0].Text = "Coins: " + player.coins;
+  gameUI.textboxes[1].Text = "Lives: " + player.lives;
+  //Display the in-game UI
+  gameUI.display();
 }
-      
+
 
 void keyPressed() {
-  if(key == 'a' || keyCode == LEFT) {
+  if (key == 'a' || keyCode == LEFT) {
     player.left = true;
   }
-  if(key == 'd' || keyCode == RIGHT) {
+  if (key == 'd' || keyCode == RIGHT) {
     player.right = true;
   }
- if(keyCode == SHIFT && !player.jumping) {
-   player.running = true;
-   player.speed = 3f;
- }
- if (key == ' ' && !player.jumping) {
-      player.vy = -player.jumpForce;
-      player.jumping = true;
-      //jump.play();
- }
+  if (keyCode == SHIFT && !player.jumping) {
+    player.running = true;
+    player.speed = 3f;
+  }
+  if (key == ' ' && !player.jumping) {
+    player.vy = -player.jumpForce;
+    player.jumping = true;
+    //jump.play();
+  }
 
- player.move();
+  if (!paused) player.move();
 }
 
 void keyReleased() {
-  if(key == 'a' || keyCode == LEFT) {
+  if (key == 'a' || keyCode == LEFT) {
     player.left = false;
   }
-  if(key == 'd' || keyCode == RIGHT) {
+  if (key == 'd' || keyCode == RIGHT) {
     player.right = false;
   }
-  if(keyCode == SHIFT) {
+  if (keyCode == SHIFT) {
     player.running = false;
     player.speed = 1.5f;
   }
-  
-  player.move();
+
+  if (!paused) player.move();
+}
+
+void mousePressed() {
+  if (gameUI.buttons[0].isPressed()) {
+    paused = !paused;
+    if (paused) {
+      text("Paused", width/2 - 60, height/2);
+      noLoop();
+    } else loop();
+  }
 }
 /*Player player;
  GameManager gameManager;

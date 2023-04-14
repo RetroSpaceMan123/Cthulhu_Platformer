@@ -3,12 +3,15 @@ import processing.sound.*;
 SoundFile music;
 SoundFile coinSound;
 SoundFile roar1;
+SoundFile jump;
 
 Player player;
 Cthulhu cthulhu;
 PImage bckg;
 Coin[] coins;
 Platform platform;
+Cover[] cover;
+boolean covered;
 int time;
 
 void setup() {
@@ -16,6 +19,7 @@ void setup() {
   music = new SoundFile(this, "mystery.mp3");
   coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
   roar1 = new SoundFile(Cthulhu_Platformer.this, "roar1.wav");
+  jump = new SoundFile(Cthulhu_Platformer.this, "jump.wav");
   player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
@@ -27,6 +31,9 @@ void setup() {
   coins[1] = new Coin(500, 525);
   coins[2] = new Coin(550, 525);
   platform = new Platform(400, 600, 300, 100, color(155));
+  cover  = new Cover[1];
+  //cover[0] = new Cover(450, 470, 40, 80, 155);
+  cover[0] = new Cover(300, 470, 40, 80, 155);
 }
 
 void draw() {
@@ -46,7 +53,7 @@ time = 0;
   
   player.checkPlatform(platform);
   player.physics();
-  System.out.println("vy: " + player.vy);
+  //System.out.println("vy: " + player.vy);
   for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
       coins[i].i = (coins[i].i+1)%10;
@@ -55,6 +62,9 @@ time = 0;
   }
   
   platform.display();
+  for(int i = 0; i < cover.length; i++) {
+    cover[i].display();
+  }
   player.display();
   if (player.walking == false && player.running == false && player.isOnPlatform) {
   
@@ -85,6 +95,40 @@ time = 0;
     } 
   }      
 }
+  //cover logic
+  covered = false;
+ 
+  for(int i = 0; i < cover.length; i++) {
+    boolean temp = player.xPos + 10 <= cover[i].xPos + cover[i].coverWidth && player.xPos - 15 >= cover[i].xPos;
+    temp &= player.yPos - 18 >= cover[i].yPos && player.yPos + 10 <= cover[i].yPos + cover[i].coverHeight;
+    covered |= temp;
+  }
+  
+  player.isInCover = covered;
+  System.out.println(player.isInCover);
+  
+  //death reset
+  if(player.yPos > 850 && player.lives > 1) {
+    player.coins = 0;
+    player.lives--;
+    player.xPos = width/2;
+    player.yPos = height/2;
+    player.vy = 1.5f;
+    //time = 0;
+    //cthulhu.ascend = false;
+   
+    for(int i = 0; i < coins.length; i++) {
+      coins[i].isCollected = false;
+    }
+  } else if(player.yPos > 850 && player.lives == 1) {
+    player.lives--;
+  }
+  
+  textSize(30);
+  text("coins: " + player.coins, 25, 100);
+  fill(#FF0000);
+  text("lives: " + player.lives, 25, 130);
+  noFill();
 }
       
 
@@ -102,6 +146,7 @@ void keyPressed() {
  if (key == ' ' && !player.jumping) {
       player.vy = -player.jumpForce;
       player.jumping = true;
+      //jump.play();
  }
 
  player.move();

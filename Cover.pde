@@ -13,7 +13,7 @@ class Cover {
   }
 
   void display() {
-    rectMode(CENTER);
+    rectMode(CORNER);
     fill(Color);
     rect(xPos, yPos, coverWidth, coverHeight);
   }

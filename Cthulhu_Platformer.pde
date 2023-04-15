@@ -9,7 +9,7 @@ Player player;
 Cthulhu cthulhu;
 PImage bckg;
 Coin[] coins;
-Platform platform;
+Platform[] platforms;
 Cover[] cover;
 boolean covered;
 int time;
@@ -25,7 +25,21 @@ float currTime = 0;          // initialize the timer
 float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
 boolean gameOver;
+boolean recentDeath;
 
+void loseLife() {
+  player.coins = 0;
+  player.lives--;
+  player.xPos = width/2;
+  player.yPos = height/2;
+  player.vy = 1.5f;
+  //time = 0;
+  //cthulhu.ascend = false;
+
+  for (int i = 0; i < coins.length; i++) {
+    coins[i].isCollected = false;
+  }
+}
 
 void setup() {
   size(800, 800);
@@ -38,16 +52,27 @@ void setup() {
   frameRate(50);
   bckg = loadImage("background1.png");
   bckg.resize(800, 800);
-  coins = new Coin[3];
+  coins = new Coin[6];
   time = millis();
   coins[0] = new Coin(400, 525);
-  coins[1] = new Coin(500, 525);
-  coins[2] = new Coin(550, 525);
-  platform = new Platform(400, 600, 300, 100, color(155));
+  coins[1] = new Coin(255, 650);
+  coins[2] = new Coin(100, 265);
+  coins[3] = new Coin(600, 360);
+  coins[4] = new Coin(200, 360);
+  coins[5] = new Coin(700, 265);
+  platforms = new Platform[6];
+  platforms[0] = new Platform(400, 600, 200, 100, color(155));
+  platforms[1] = new Platform(600, 450, 200, 50, color(155));
+  platforms[2] = new Platform(200, 450, 200, 50, color(155));
+  platforms[3] = new Platform(100, 350, 100, 50, color(155));
+  platforms[4] = new Platform(250, 700, 100, 50, color(155));
+  platforms[5] = new Platform(700, 350, 100, 50, color(155));
 
-  cover  = new Cover[1];
+  cover  = new Cover[3];
   //cover[0] = new Cover(450, 470, 40, 80, 155);
-  cover[0] = new Cover(300, 470, 40, 80, 155);
+  cover[0] = new Cover(300, 470, 60, 80, 155);
+  cover[1] = new Cover(240, 345, 60, 80, 155);
+  cover[2] = new Cover(500, 345, 60, 80, 155);
 
 
 
@@ -64,6 +89,7 @@ void setup() {
   buttons[0] = mainMenu;
   gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
   gameOver = false;
+  recentDeath = false;
 }
 
 void draw() {
@@ -71,6 +97,11 @@ void draw() {
    music.play(1); }
    */
   background(bckg);
+
+  //Game State
+  if (player.lives == 0 || player.coins == coins.length) {
+    gameOver = true;
+  }
 
   currTime = millis();
   if (!cthulhu.active) {
@@ -94,6 +125,12 @@ void draw() {
         cthulhu.descend = false;
         cthulhu.ascend = true;
 
+        //Player looses a life if they are not in cover, and have not been hit by Cthulu's stare
+        if (!player.isInCover && !recentDeath) {
+          loseLife();
+          recentDeath = true;
+        }
+
         int passedTime = millis() - savedTime;
         // Has five seconds passed?
         if (passedTime > totalTime) {
@@ -102,6 +139,7 @@ void draw() {
           cthulhu.ascend = false;
           cthulhu.descend = true;
           savedTime = millis(); // Save the current time to restart the timer!
+          recentDeath = false;
         }
       }
 
@@ -123,7 +161,11 @@ void draw() {
 
   cthulhu.display();
 
-  player.checkPlatform(platform);
+  for (int i = 0; i < platforms.length; i++) {
+    boolean landed = player.checkPlatform(platforms[i]);
+    if (landed) break;
+  }
+
   player.physics();
   //System.out.println("vy: " + player.vy);
   for (int i = 0; i < coins.length; i++) {
@@ -133,7 +175,9 @@ void draw() {
     coins[i].display();
   }
 
-  platform.display();
+  for (int i = 0; i < platforms.length; i++) {
+    platforms[i].display();
+  }
   for (int i = 0; i < cover.length; i++) {
     cover[i].display();
   }
@@ -174,26 +218,27 @@ void draw() {
   //System.out.println(player.isInCover);
 
   //death reset
-  if (player.yPos > 850 && player.lives > 1) {
-    player.coins = 0;
-    player.lives--;
-    player.xPos = width/2;
-    player.yPos = height/2;
-    player.vy = 1.5f;
-    //time = 0;
-    //cthulhu.ascend = false;
-
-    for (int i = 0; i < coins.length; i++) {
-      coins[i].isCollected = false;
-    }
-  } else if (player.yPos > 850 && player.lives == 1) {
-    player.lives--;
+  if (player.yPos > 850) {
+    loseLife();
   }
+
   //Update the in-game UI
   gameUI.textboxes[0].Text = "Coins: " + player.coins + '/' + coins.length;
   gameUI.textboxes[1].Text = "Lives: " + player.lives;
   //Display the in-game UI
   gameUI.display();
+
+  if (gameOver) {
+    if (player.lives == 0) {
+      text("You Lose", width/3 + 65, height/2);
+    } else if (player.coins == coins.length) {
+      text("You Win", width/3 + 65, height/2);
+    }
+
+    text("Click Anywhere to Restart", width/3 - 65, height/2 + 42);
+    paused = true;
+    noLoop();
+  }
 }
 
 
@@ -257,7 +302,29 @@ void keyReleased() {
 }
 
 void mousePressed() {
-  if (gameUI.buttons[0].isPressed()) {
+  if (gameOver) {
+    gameOver = false;
+    paused = false;
+    player.coins = 0;
+    player.lives = 3;
+    player.xPos = width/2;
+    player.yPos = height/2;
+    player.vy = 1.5f;
+    startTime = millis();
+    cthulhu.ascend = false;
+    cthulhu.descend = false;
+    cthulhu.holdStare = false;
+    cthulhu.active = false;
+    cthulhu.a = 0;
+    cthulhu.d = 0;
+
+
+    for (int i = 0; i < coins.length; i++) {
+      coins[i].isCollected = false;
+    }
+
+    loop();
+  } else if (gameUI.buttons[0].isPressed()) {
     paused = !paused;
     if (paused) {
       text("Paused", width/2 - 60, height/2);

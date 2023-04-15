@@ -82,11 +82,12 @@ class Player {
     }
   }
 
-  void checkPlatform(Platform platform) {
-    boolean y = (yPos + 25 > platform.yPos - platform.platformHeight/2 && yPos - 25 < platform.yPos + platform.platformHeight/2);
+  boolean checkPlatform(Platform platform) {
+    boolean y = (yPos + 25 > platform.yPos - platform.platformHeight/2 && yPos - 25 < platform.yPos - platform.platformHeight/2);
     boolean x = (xPos > platform.xPos - platform.platformWidth/2 && xPos < platform.xPos + platform.platformWidth/2);
     isOnPlatform = (x && y);
     if (isOnPlatform) yPos = platform.yPos - platform.platformHeight/2 - 25;
+    return isOnPlatform;
   }
 
   void physics() {

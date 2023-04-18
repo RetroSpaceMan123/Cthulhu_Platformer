@@ -37,12 +37,23 @@ void loseLife() {
   time = 0;
   
   cthulhu.active = false;
+  recentDeath = true;
         
   player.isDead = true;
   for (int i = 0; i < coins.length; i++) {
     coins[i].isCollected = false;
 }
+
+  cthulhu.a = 0;
+  cthulhu.d = 0;
+  cthulhu.descend = false;
+  cthulhu.ascend = false;
+  startTime = millis();
+  interval = random(3000, 6000);
+  cthulhu.active = false;
+  cthulhu.holdStare = false;
 }
+
 
 void setup() {
   size(800, 800);
@@ -57,6 +68,8 @@ void setup() {
   bckg.resize(800, 800);
   coins = new Coin[6];
   time = millis();
+  
+  //init
   coins[0] = new Coin(400, 525);
   coins[1] = new Coin(255, 650);
   coins[2] = new Coin(100, 265);
@@ -78,10 +91,12 @@ void setup() {
   cover[2] = new Cover(500, 345, 60, 80, 6);
 
 
-  interval = random(2000, 5000); // generate a random interval between 2 and 5 seconds
+//interval creation
+  interval = random(2000, 6000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
   savedTime = 0;
 
+//UIs and textboxes
   Textbox[] textboxes = new Textbox[2];
   textboxes[0] = new Textbox(500, 50, 32, "Constantia-Bold-32.vlw", "Coins: ");
   textboxes[1] = new Textbox(670, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
@@ -107,8 +122,10 @@ void draw() {
     gameOver = true;
   }
 
+
+//Cthulhu states
   currTime = millis();
-  if (!cthulhu.active) {
+  if (!cthulhu.active || recentDeath) {
     // check if the timer has reached the interval
     if (currTime >= startTime + interval) {
       cthulhu.active = true;
@@ -130,7 +147,7 @@ void draw() {
         cthulhu.ascend = true;
 
         //Player looses a life if they are not in cover, and have not been hit by Cthulu's stare
-        if (!player.isInCover && !recentDeath) {
+        if (!player.isInCover) {
           loseLife();
           recentDeath = true;
           savedTime = millis();
@@ -158,7 +175,7 @@ void draw() {
       if (cthulhu.d == 12) {
         cthulhu.descend = false;
         startTime = millis();
-        interval = random(2000, 5000);
+        interval = random(3000, 6000);
         cthulhu.active = false;
       }
     }
@@ -166,6 +183,7 @@ void draw() {
 
   cthulhu.display();
 
+//Platform checks and physics
   for (int i = 0; i < platforms.length; i++) {
     boolean landed = player.checkPlatform(platforms[i]);
     if (landed) break;
@@ -173,6 +191,8 @@ void draw() {
 
   player.physics();
   //System.out.println("vy: " + player.vy);
+  
+  //Coins and platforms display
   for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
       coins[i].i = (coins[i].i+1)%10;
@@ -243,6 +263,9 @@ void draw() {
     text("Click Anywhere to Restart", width/3 - 65, height/2 + 42);
     paused = true;
     noLoop();
+  }
+  else if (!gameOver) {
+    player.isDead = false;
   }
 }
 

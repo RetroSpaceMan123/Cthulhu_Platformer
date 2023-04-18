@@ -6,9 +6,10 @@ class Player {
   int g; //frame counter for walk
   int h; //frame counter for jump
   int j; //frame counter for run
-  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform, isInCover = false;
+  int k; //frame counter for death
+  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform = false, isInCover = false, isDead = false;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
-  Sprite idle, walk, jump, run;
+  Sprite idle, walk, jump, run, death;
 
   // added variable for checking if Cthulhu is peaking
   boolean peeking = false;
@@ -19,6 +20,7 @@ class Player {
     walk = new Sprite("player_walk_", 5);
     jump = new Sprite("player_jump_", 6);
     run = new Sprite("player_run_", 8);
+    death = new Sprite("player_death_", 5);
   }
 
   //Default Constructor
@@ -52,7 +54,11 @@ class Player {
         image(run.get(j), xPos, yPos, 50, 50);
     } else if (walking) {
       image(walk.get(g), xPos, yPos, 50, 50);
-    } else {
+    } 
+    else if(isDead) {
+      image(death.get(k), xPos, yPos, 50, 50);
+    }
+      else {
       image(idle.get(f), xPos, yPos, 50, 50);
     }
   }

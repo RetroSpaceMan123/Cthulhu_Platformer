@@ -4,12 +4,12 @@ class Platform {
   PImage platformImage;
 
   //Constructor
-  Platform(float x, float y, float w, float h, color c) {
+  Platform(float x, float y, float w, float h, int num) {
     xPos = x;
     yPos = y;
     platformWidth = w;
     platformHeight = h;
-    platformImage = loadImage("platform.png");
+    platformImage = loadImage("platform"+num+".jpeg");
   }
 
   void display() {

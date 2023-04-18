@@ -30,23 +30,30 @@ boolean recentDeath;
 void loseLife() {
   player.coins = 0;
   player.lives--;
-  player.xPos = width/2;
+  time = 0;
+  cthulhu.ascend = false;
+  cthulhu.active = false;
+
+  player.isDead = true;
+  if(frameCount % 15 == 0){
+    player.k = (player.k+1)%5;
+  }
+  if(player.k == 5){
+    player.xPos = width/2;
   player.yPos = height/2;
   player.vy = 1.5f;
-  //time = 0;
-  //cthulhu.ascend = false;
-
+  }
   for (int i = 0; i < coins.length; i++) {
     coins[i].isCollected = false;
-  }
+}
 }
 
 void setup() {
   size(800, 800);
-  music = new SoundFile(this, "mystery.mp3");
-  coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
-  roar1 = new SoundFile(Cthulhu_Platformer.this, "roar1.wav");
-  jump = new SoundFile(Cthulhu_Platformer.this, "jump.wav");
+  music = new SoundFile(this, "theme.wav");
+  coinSound = new SoundFile(this, "coin_collect.wav");
+  roar1 = new SoundFile(this, "roar1.wav");
+  jump = new SoundFile(this, "jump.wav");
   player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
@@ -61,22 +68,21 @@ void setup() {
   coins[4] = new Coin(200, 360);
   coins[5] = new Coin(700, 265);
   platforms = new Platform[6];
-  platforms[0] = new Platform(400, 600, 200, 100, color(155));
-  platforms[1] = new Platform(600, 450, 200, 50, color(155));
-  platforms[2] = new Platform(200, 450, 200, 50, color(155));
-  platforms[3] = new Platform(100, 350, 100, 50, color(155));
-  platforms[4] = new Platform(250, 700, 100, 50, color(155));
-  platforms[5] = new Platform(700, 350, 100, 50, color(155));
+  platforms[0] = new Platform(400, 600, 200, 100, 1);
+  platforms[1] = new Platform(600, 450, 200, 50, 1);
+  platforms[2] = new Platform(200, 450, 200, 50, 1);
+  platforms[3] = new Platform(100, 350, 100, 50, 1);
+  platforms[4] = new Platform(250, 700, 100, 50, 1);
+  platforms[5] = new Platform(700, 350, 100, 50, 1);
 
   cover  = new Cover[3];
   //cover[0] = new Cover(450, 470, 40, 80, 155);
-  cover[0] = new Cover(300, 470, 60, 80, 155);
-  cover[1] = new Cover(240, 345, 60, 80, 155);
-  cover[2] = new Cover(500, 345, 60, 80, 155);
+  cover[0] = new Cover(300, 470, 60, 80, 3);
+  cover[1] = new Cover(240, 345, 60, 80, 3);
+  cover[2] = new Cover(500, 345, 60, 80, 3);
 
 
-
-  interval = random(9000, 10000); // generate a random interval between 9 and 10 seconds
+  interval = random(2000, 5000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
   savedTime = 0;
 
@@ -93,9 +99,9 @@ void setup() {
 }
 
 void draw() {
-  /*if(!music.isPlaying()){
+  if(!music.isPlaying()){
    music.play(1); }
-   */
+   
   background(bckg);
 
   //Game State
@@ -114,7 +120,7 @@ void draw() {
 
   if (cthulhu.active ) {
     // reset the timer and generate a new random interval
-    if (frameCount % 40 == 0) {
+    if (frameCount % 20 == 0) {
 
       if (cthulhu.a == 10) {
         savedTime = millis();
@@ -129,6 +135,7 @@ void draw() {
         if (!player.isInCover && !recentDeath) {
           loseLife();
           recentDeath = true;
+          savedTime = millis();
         }
 
         int passedTime = millis() - savedTime;
@@ -153,7 +160,7 @@ void draw() {
       if (cthulhu.d == 12) {
         cthulhu.descend = false;
         startTime = millis();
-        interval = random(3000, 6000);
+        interval = random(2000, 5000);
         cthulhu.active = false;
       }
     }

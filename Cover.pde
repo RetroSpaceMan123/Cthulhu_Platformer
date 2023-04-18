@@ -1,20 +1,20 @@
 //This is where it's safe for the player to hide in order to avoid Cthulhu's stare
 class Cover {
   float xPos, yPos, coverWidth, coverHeight;
-  color Color;
+  PImage coverImage;
 
   //Constructor
-  Cover(float x, float y, float w, float h, color c) {
+  Cover(float x, float y, float w, float h, int num) {
     xPos = x;
     yPos = y;
     coverWidth = w;
     coverHeight = h;
-    Color = c;
+    coverImage = loadImage("platform"+num+".jpeg");
+    
   }
 
   void display() {
-    rectMode(CORNER);
-    fill(Color);
-    rect(xPos, yPos, coverWidth, coverHeight);
+    imageMode(CORNER);
+    image(coverImage, xPos, yPos, coverWidth, coverHeight);
   }
 };

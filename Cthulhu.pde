@@ -36,9 +36,7 @@ class Cthulhu {
     if(ascend){
     imageMode(CENTER);
     image(ascending.get(a), xPos, yPos, 600, 600);
-    if(!roar1.isPlaying()) {
-    roar1.play(1);
-    }
+    
     }
     else if(descend) {
       image(descending.get(d), xPos, yPos, 600, 600);

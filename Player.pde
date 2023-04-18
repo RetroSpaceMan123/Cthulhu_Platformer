@@ -33,6 +33,7 @@ class Player {
     g = 0;
     h = 0;
     j = 0;
+    k = 0;
     loadSprites();
   }
 
@@ -55,13 +56,14 @@ class Player {
     } else if (walking) {
       image(walk.get(g), xPos, yPos, 50, 50);
     } 
-    else if(isDead) {
-      image(death.get(k), xPos, yPos, 50, 50);
-    }
-      else {
+    else if(isDead){
+    image(death.get(k), xPos, yPos, 50, 50);
+  }
+  else {
       image(idle.get(f), xPos, yPos, 50, 50);
     }
   }
+
 
   //Move the player
   void move() {

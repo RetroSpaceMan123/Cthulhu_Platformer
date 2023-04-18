@@ -113,9 +113,10 @@ void draw() {
   }
 
   if (cthulhu.active ) {
-    // reset the timer and generate a new random interval
+   
     if (frameCount % 40 == 0) {
-
+    
+      // start the timer at the second to last frame of cthulhu animations
       if (cthulhu.a == 10) {
         savedTime = millis();
       }
@@ -153,7 +154,7 @@ void draw() {
       if (cthulhu.d == 12) {
         cthulhu.descend = false;
         startTime = millis();
-        interval = random(3000, 6000);
+        interval = random(3000, 6000); // 3 - 5 seconds 
         cthulhu.active = false;
       }
     }

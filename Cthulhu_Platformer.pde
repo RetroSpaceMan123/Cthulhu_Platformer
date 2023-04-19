@@ -1,9 +1,6 @@
 //Main File
 import processing.sound.*;
-SoundFile music;
-SoundFile coinSound;
-SoundFile roar1;
-SoundFile jump;
+SoundFile music, coinSound, roar1, roar2, jump, stareSound, loseSound;
 
 Player player;
 Cthulhu cthulhu;
@@ -38,6 +35,9 @@ void loseLife() {
   
   cthulhu.active = false;
   recentDeath = true;
+  if(!loseSound.isPlaying()){
+  loseSound.play();
+  }
         
   player.isDead = true;
   for (int i = 0; i < coins.length; i++) {
@@ -49,18 +49,25 @@ void loseLife() {
   cthulhu.descend = false;
   cthulhu.ascend = false;
   startTime = millis();
-  interval = random(3000, 6000);
+  interval = random(4000, 8000);
   cthulhu.active = false;
   cthulhu.holdStare = false;
+  stareSound.stop();
+  if(!music.isPlaying()){
+    music.play();
+  }
 }
 
 
 void setup() {
   size(800, 800);
-  music = new SoundFile(Cthulhu_Platformer.this, "sinkingisland.mp3");
+  music = new SoundFile(Cthulhu_Platformer.this, "theme.mp3");
   coinSound = new SoundFile(this, "coin_collect.wav");
   roar1 = new SoundFile(this, "roar1.wav");
+  roar2 = new SoundFile(this, "roar2.wav");
+  stareSound = new SoundFile(this, "cthulhu_stare.wav");
   jump = new SoundFile(this, "jump.wav");
+  loseSound = new SoundFile(this, "lose_sound1.wav");
   player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
@@ -77,22 +84,22 @@ void setup() {
   coins[4] = new Coin(200, 360);
   coins[5] = new Coin(700, 265);
   platforms = new Platform[6];
-  platforms[0] = new Platform(400, 600, 200, 100, 5);
-  platforms[1] = new Platform(600, 450, 200, 50, 5);
-  platforms[2] = new Platform(200, 450, 200, 50, 5);
-  platforms[3] = new Platform(100, 350, 100, 50, 5);
-  platforms[4] = new Platform(250, 700, 100, 50, 5);
-  platforms[5] = new Platform(700, 350, 100, 50, 5);
+  platforms[0] = new Platform(400, 600, 200, 100, 1);
+  platforms[1] = new Platform(600, 450, 200, 50, 1);
+  platforms[2] = new Platform(200, 450, 200, 50, 1);
+  platforms[3] = new Platform(100, 350, 100, 50, 1);
+  platforms[4] = new Platform(250, 700, 100, 50, 1);
+  platforms[5] = new Platform(700, 350, 100, 50, 1);
 
   cover  = new Cover[3];
   //cover[0] = new Cover(450, 470, 40, 80, 155);
-  cover[0] = new Cover(300, 470, 60, 80, 6);
-  cover[1] = new Cover(240, 345, 60, 80, 6);
-  cover[2] = new Cover(500, 345, 60, 80, 6);
+  cover[0] = new Cover(300, 470, 60, 80, 1);
+  cover[1] = new Cover(240, 345, 60, 80, 1);
+  cover[2] = new Cover(500, 345, 60, 80, 1);
 
 
 //interval creation
-  interval = random(2000, 6000); // generate a random interval between 2 and 5 seconds
+  interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
   savedTime = 0;
 
@@ -107,14 +114,10 @@ void setup() {
   gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
   gameOver = false;
   recentDeath = false;
+  music.loop();
 }
 
 void draw() {
-  
-    /*if(!music.isPlaying()){
-    music.play(); }
-    */
-   
   background(bckg);
 
   //Game State
@@ -175,7 +178,7 @@ void draw() {
       if (cthulhu.d == 12) {
         cthulhu.descend = false;
         startTime = millis();
-        interval = random(3000, 6000);
+        interval = random(4000, 8000);
         cthulhu.active = false;
       }
     }
@@ -188,6 +191,8 @@ void draw() {
     boolean landed = player.checkPlatform(platforms[i]);
     if (landed) break;
   }
+  
+  
 
   player.physics();
   //System.out.println("vy: " + player.vy);
@@ -286,7 +291,7 @@ void keyPressed() {
   if (key == ' ' && !player.jumping) {
     player.vy = -player.jumpForce;
     player.jumping = true;
-    //jump.play();
+    jump.play();
   }
 
   if (keyCode == SHIFT && !player.jumping) {
@@ -307,10 +312,15 @@ void keyPressed() {
   if (key == ' ' && !player.jumping) {
     player.vy = -player.jumpForce;
     player.jumping = true;
-    //jump.play();
+    jump.play();
   }
 
-  if (!paused) player.move();
+  if (!paused) { 
+    player.move();
+    if(!music.isPlaying()){
+      music.play();
+    }
+  }
 }
 
 void keyReleased() {
@@ -356,6 +366,12 @@ void mousePressed() {
     paused = !paused;
     if (paused) {
       text("Paused", width/2 - 60, height/2);
+      music.pause();
+      if(stareSound.isPlaying()){
+      stareSound.pause();
+      }
+      roar1.stop();
+      roar2.stop();
       noLoop();
     } else loop();
   }

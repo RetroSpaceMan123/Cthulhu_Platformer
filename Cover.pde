@@ -9,7 +9,7 @@ class Cover {
     yPos = y;
     coverWidth = w;
     coverHeight = h;
-    coverImage = loadImage("platform"+num+".png");
+    coverImage = loadImage("cover"+num+".png");
     
   }
 

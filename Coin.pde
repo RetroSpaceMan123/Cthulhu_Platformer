@@ -6,7 +6,6 @@ class Coin {
   boolean isCollected;
   Sprite coin;
   int i;
-  boolean play;
 
   //Constructor
   Coin(float x, float y) {
@@ -26,9 +25,7 @@ class Coin {
     }
   }
 
-  void collect(){
-    coinSound = new SoundFile(Cthulhu_Platformer.this, "coin_collect.wav");
-    
+  void collect(){    
     boolean collisionCheck = player.xPos - 25 <= xPos && player.xPos + 23 >= xPos;
     collisionCheck &= player.yPos + 37 >= yPos && player.yPos - 34 <= yPos;
     if(player.yPos >= yPos) {
@@ -40,9 +37,7 @@ class Coin {
     if(collisionCheck) {
       isCollected = true;
       player.coins++;
-      if(!coinSound.isPlaying()){
         coinSound.play();
       }
     }
   }
-}

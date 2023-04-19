@@ -9,13 +9,11 @@ class Platform {
     yPos = y;
     platformWidth = w;
     platformHeight = h;
-    platformImage = loadImage("platform"+num+".jpeg");
+    platformImage = loadImage("wall"+num+".png");
   }
 
   void display() {
     imageMode(CENTER);
     image(platformImage, xPos, yPos, platformWidth, platformHeight);
-    /*rect(xPos, yPos, platformWidth, platformHeight);
-    */
   }
 };

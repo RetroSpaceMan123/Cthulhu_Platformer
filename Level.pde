@@ -4,18 +4,16 @@ class Level {
   Platform[] platforms;
   Cover[] covers;
   ButtonItem[] buttonItems;
-  Enemy[] enemies;
   Player player;
   Cthulhu cthulhu;
   float playerX, playerY;
   PImage background;
 
-  Level(Coin[] cn, Platform[] pf, Cover[] cv, ButtonItem[] bt, Enemy[] em, Player pl, Cthulhu ct, float x, float y, String path) {
+  Level(Coin[] cn, Platform[] pf, Cover[] cv, ButtonItem[] bt, Player pl, Cthulhu ct, float x, float y, String path) {
     coins = cn;
     platforms = pf;
     covers = cv;
     buttonItems = bt;
-    enemies = em;
     player = pl;
     cthulhu = ct;
     playerX = x;
@@ -45,9 +43,6 @@ class Level {
       buttonItems[i].getDoor().display();
     }
 
-    for (int i = 0; i < enemies.length; i++) {
-      enemies[i].display();
-    }
 
   }
 };

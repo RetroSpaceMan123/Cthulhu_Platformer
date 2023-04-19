@@ -1,18 +1,14 @@
 import processing.sound.*;
-SoundFile roar2, stareSound;
 float timer;
 
 //Appears in random intervals in order to force player into cover
 class Cthulhu {
   float xPos, yPos;
-  boolean active;
-  boolean ascend;
-  boolean descend;
+  boolean active, ascend, descend, holdStare;
   Sprite ascending;
   Sprite descending;
   PImage staring;
   int a, d;
-  boolean holdStare = false;
   
 
   void loadSprites(){
@@ -30,16 +26,29 @@ class Cthulhu {
     loadSprites();
     ascend = false;
     descend = false;
+    holdStare = false;
   }
 
   void display() {
+    
+    if(holdStare){
+      if(!stareSound.isPlaying()){
+      stareSound.play(1.5);
+      music.pause();
+      }
+    }
+    
     if(ascend){
     imageMode(CENTER);
     image(ascending.get(a), xPos, yPos, 600, 600);
-    
     }
     else if(descend) {
       image(descending.get(d), xPos, yPos, 600, 600);
+      stareSound.stop();
+      if(!music.isPlaying()){
+      music.play();
+      }
     }
-  }
-};
+
+    }
+}

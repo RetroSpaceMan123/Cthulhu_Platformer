@@ -31,7 +31,7 @@ class Cthulhu {
 
   void display() {
     
-    if(holdStare){
+    if(a == 11 && !descend){
       if(!stareSound.isPlaying()){
       stareSound.play(1.5);
       music.pause();

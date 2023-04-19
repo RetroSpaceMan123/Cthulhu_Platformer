@@ -1,6 +1,6 @@
 //Main File
 import processing.sound.*;
-SoundFile music, coinSound, roar1, roar2, jump, stareSound;
+SoundFile music, coinSound, roar1, roar2, jump, stareSound, loseSound;
 
 Player player;
 Cthulhu cthulhu;
@@ -35,6 +35,9 @@ void loseLife() {
   
   cthulhu.active = false;
   recentDeath = true;
+  if(!loseSound.isPlaying()){
+  loseSound.play();
+  }
         
   player.isDead = true;
   for (int i = 0; i < coins.length; i++) {
@@ -49,8 +52,10 @@ void loseLife() {
   interval = random(4000, 8000);
   cthulhu.active = false;
   cthulhu.holdStare = false;
-  roar1.stop();
-  roar2.stop();
+  stareSound.stop();
+  if(!music.isPlaying()){
+    music.play();
+  }
 }
 
 
@@ -62,6 +67,7 @@ void setup() {
   roar2 = new SoundFile(this, "roar2.wav");
   stareSound = new SoundFile(this, "cthulhu_stare.wav");
   jump = new SoundFile(this, "jump.wav");
+  loseSound = new SoundFile(this, "lose_sound1.wav");
   player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
@@ -309,7 +315,12 @@ void keyPressed() {
     jump.play();
   }
 
-  if (!paused) player.move();
+  if (!paused) { 
+    player.move();
+    if(!music.isPlaying()){
+      music.play();
+    }
+  }
 }
 
 void keyReleased() {
@@ -353,15 +364,12 @@ void mousePressed() {
     loop();
   } else if (gameUI.buttons[0].isPressed()) {
     paused = !paused;
-    if(roar1.isPlaying()){
-      roar1.pause();
-    }
-    else if(roar2.isPlaying()){
-      roar2.pause();
-    }
     if (paused) {
       text("Paused", width/2 - 60, height/2);
       music.pause();
+      if(stareSound.isPlaying()){
+      stareSound.pause();
+      }
       roar1.stop();
       roar2.stop();
       noLoop();

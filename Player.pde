@@ -7,7 +7,7 @@ class Player {
   int h; //frame counter for jump
   int j; //frame counter for run
   int k; //frame counter for death
-  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform = false, isInCover = false, isDead = false;
+  boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform = false, isOnWall = false, isInCover = false, isDead = false;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run, death;
 
@@ -97,12 +97,20 @@ class Player {
     if (isOnPlatform) yPos = platform.yPos - platform.platformHeight/2 - 25;
     return isOnPlatform;
   }
+  
+  boolean checkWall(Wall wall) {
+    boolean y = (yPos + 25 > wall.yPos - wall.wallHeight/2 && yPos - 25 < wall.yPos - wall.wallHeight/2);
+    boolean x = (xPos > wall.xPos - wall.wallWidth/2 && xPos < wall.xPos + wall.wallWidth/2);
+    isOnWall = (x && y);
+    if (isOnWall) yPos = wall.yPos - wall.wallHeight/2 - 25;
+    return isOnWall;
+  }
 
   void physics() {
     vx += ax;
     vy += ay;
 
-    if (isOnPlatform) {
+    if (isOnPlatform || isOnWall) {
       ay = 0;
       jumping = false;
     } else {

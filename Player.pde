@@ -100,7 +100,7 @@ class Player {
   
   boolean checkWall(Wall wall) {
     boolean y = (yPos + 25 > wall.yPos - wall.wallHeight/2 && yPos - 25 < wall.yPos - wall.wallHeight/2);
-    boolean x = (xPos + 12 > wall.xPos - wall.wallWidth/2 && xPos < wall.xPos + wall.wallWidth/2);
+    boolean x = (xPos > wall.xPos - wall.wallWidth/2 && xPos < wall.xPos + wall.wallWidth/2);
     isOnWall = (x && y);
     if (isOnWall) yPos = wall.yPos - wall.wallHeight/2 - 25;
     return isOnWall;

@@ -8,6 +8,7 @@ PImage bckg;
 Coin[] coins;
 Platform[] platforms;
 Cover[] cover;
+Wall[] walls;
 boolean covered;
 int time;
 UI gameUI;
@@ -96,7 +97,9 @@ void setup() {
   cover[0] = new Cover(300, 470, 60, 80, 1);
   cover[1] = new Cover(240, 345, 60, 80, 1);
   cover[2] = new Cover(500, 345, 60, 80, 1);
-
+  
+  walls = new Wall[1];
+  walls[0] = new Wall(425, 440, 100, 100, 4);
 
 //interval creation
   interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
@@ -192,6 +195,11 @@ void draw() {
     if (landed) break;
   }
   
+//Wall checks and physics
+  for(int i = 0; i < walls.length; i++) {
+    boolean landed = player.checkWall(walls[i]);
+    if(landed) break;
+  }
   
 
   player.physics();
@@ -211,7 +219,13 @@ void draw() {
   for (int i = 0; i < cover.length; i++) {
     cover[i].display();
   }
+  
+  for(int i = 0; i < walls.length; i++) {
+    walls[i].display();
+  }
+  
   player.display();
+  
 
   if (player.vy != 0 || player.jumping == true) {
     if (frameCount % 10 == 0) {
@@ -246,7 +260,46 @@ void draw() {
 
   player.isInCover = covered;
   //System.out.println(player.isInCover);
+  
+  
+  //wall collision
+  for(int i = 0; i < walls.length; i++) {
+    boolean temp = player.xPos + 10 > walls[i].xPos - walls[i].wallWidth/2 && player.xPos - 12 < walls[i].xPos + walls[i].wallWidth/2;
+    temp &= player.yPos - 19 < walls[i].yPos + walls[i].wallHeight/2 && player.yPos + 16 > walls[i].yPos - walls[i].wallHeight/2;
 
+    /*
+    if(temp) {
+      stroke(#00FF00);
+      //line(player.xPos, player.yPos, walls[0].xPos - walls[0].wallWidth/2 - 11, player.yPos);
+      stroke(#FF0000);
+      //line(player.xPos, player.yPos, walls[0].xPos + walls[0].wallWidth/2 + 12, player.yPos);
+      stroke(#FF00FF);
+      //line(player.xPos, player.yPos, player.xPos, walls[0].yPos - walls[0].wallHeight/2 - 16.75);
+      stroke(#FFFF00);
+      //line(player.xPos, player.yPos, player.xPos, walls[0].yPos + walls[0].wallHeight/2 + 19.25);
+    }
+    */
+    
+    float leftSide = dist(player.xPos, player.yPos, walls[i].xPos - walls[i].wallWidth/2 - 11, player.yPos);
+    float topSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos - walls[i].wallHeight/2 - 16.75);
+    float rightSide = dist(player.xPos, player.yPos, walls[i].xPos + walls[i].wallWidth/2 + 12, player.yPos);
+    float bottomSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos + walls[i].wallHeight/2 + 19.25);
+  
+    if(temp) {
+      if(leftSide < topSide && leftSide < rightSide && leftSide < bottomSide) {
+        player.xPos = walls[i].xPos - walls[i].wallWidth/2 - 11;
+      } else if(topSide < leftSide && topSide < rightSide && topSide < bottomSide) {
+        player.vy = 0;
+        player.yPos = walls[i].yPos - walls[i].wallHeight/2 - 16.75;
+      } else if(rightSide < leftSide && rightSide < topSide && rightSide < bottomSide) {
+        player.xPos = walls[i].xPos + walls[i].wallWidth/2 + 12;
+      } else if(bottomSide < leftSide && bottomSide < topSide && bottomSide < rightSide) {
+        player.vy = 0;
+        player.yPos = walls[i].yPos + walls[i].wallHeight/2 + 19;
+      }
+    }
+  }
+  
   //death reset
   if (player.yPos > 850) {
     loseLife();
@@ -317,7 +370,10 @@ void keyPressed() {
 
   if (!paused) { 
     player.move();
+    if(!music.isPlaying()){
+      music.play();
     }
+  }
 }
 
 void keyReleased() {
@@ -370,6 +426,11 @@ void mousePressed() {
     if (paused) {
       text("Paused", width/2 - 60, height/2);
       music.pause();
+      if(stareSound.isPlaying()){
+      stareSound.pause();
+      }
+      roar1.stop();
+      roar2.stop();
       noLoop();
     } else {
       loop();

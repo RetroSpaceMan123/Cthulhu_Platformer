@@ -9,9 +9,18 @@ Coin[] coins;
 Platform[] platforms;
 Cover[] cover;
 Wall[] walls;
-boolean covered, paused, gameOver, recentDeath, win;
+boolean covered, paused, gameOver, recentDeath, win, inGame;
 int time;
 UI gameUI;
+UI pauseMenu;
+UI mainMenu;
+
+enum Difficulty {
+  TUTORIAL,
+    EASY,
+    HARD
+}
+Difficulty diff;
 
 int savedTime;
 int totalTime = 5000;
@@ -30,17 +39,17 @@ void loseLife() {
   player.yPos = height/2;
   player.vy = 1.5f;
   time = 0;
-  
+
   cthulhu.active = false;
   recentDeath = true;
-  if(!loseSound.isPlaying()){
-  loseSound.play();
+  if (!loseSound.isPlaying()) {
+    loseSound.play();
   }
-        
+
   player.isDead = true;
   for (int i = 0; i < coins.length; i++) {
     coins[i].isCollected = false;
-}
+  }
 
   cthulhu.a = 0;
   cthulhu.d = 0;
@@ -51,87 +60,23 @@ void loseLife() {
   cthulhu.active = false;
   cthulhu.holdStare = false;
   stareSound.stop();
-  if(!music.isPlaying()){
+  if (!music.isPlaying()) {
     music.play();
   }
 }
 
 
-void setup() {
-  size(1200, 800);
-  music = new SoundFile(Cthulhu_Platformer.this, "theme.mp3");
-  coinSound = new SoundFile(this, "coin_collect.wav");
-  stareSound = new SoundFile(this, "cthulhu_stare.wav");
-  jump = new SoundFile(this, "jump.wav");
-  loseSound = new SoundFile(this, "lose_sound1.wav");
-  gameOverMusic = new SoundFile(this, "game_over_music.mp3");
-  fanfare = new SoundFile(this, "fanfare.wav");
-  
-  player = new Player(3, 0, width/2, height/2);
-  cthulhu = new Cthulhu();
-  frameRate(50);
-  bckg = loadImage("background1.png");
-  bckg.resize(1200, 800);
-  coins = new Coin[6];
-  time = millis();
-  win = false;
-  
-  //init
-  coins[0] = new Coin(400, 525);
-  coins[1] = new Coin(255, 650);
-  coins[2] = new Coin(100, 265);
-  coins[3] = new Coin(600, 360);
-  coins[4] = new Coin(200, 360);
-  coins[5] = new Coin(700, 265);
-  platforms = new Platform[6];
-  platforms[0] = new Platform(400, 600, 200, 100, 1);
-  platforms[1] = new Platform(600, 450, 200, 50, 1);
-  platforms[2] = new Platform(200, 450, 200, 50, 1);
-  platforms[3] = new Platform(100, 350, 100, 50, 1);
-  platforms[4] = new Platform(250, 700, 100, 50, 1);
-  platforms[5] = new Platform(700, 350, 100, 50, 1);
-
-  cover  = new Cover[3];
-  //cover[0] = new Cover(450, 470, 40, 80, 155);
-  cover[0] = new Cover(300, 470, 60, 80, 1);
-  cover[1] = new Cover(240, 345, 60, 80, 1);
-  cover[2] = new Cover(500, 345, 60, 80, 1);
-  
-  walls = new Wall[1];
-  walls[0] = new Wall(425, 440, 100, 100, 4);
-
-//interval creation
-  interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
-  startTime = 0;
-  savedTime = 0;
-
-//UIs and textboxes
-  Textbox[] textboxes = new Textbox[2];
-  textboxes[0] = new Textbox(500, 50, 32, "Constantia-Bold-32.vlw", "Coins: ");
-  textboxes[1] = new Textbox(670, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
-  Textbox textbox = new Textbox(65, 50, 32, "Constantia-Bold-32.vlw", "Pause");
-  ButtonUI mainMenu = new ButtonUI(113, 40, 200, 42, color(100), new PImage(), textbox);
-  ButtonUI[] buttons = new ButtonUI[1];
-  buttons[0] = mainMenu;
-  gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
-  gameOver = false;
-  recentDeath = false;
-  music.loop();
-}
-
-void draw() {
-  background(bckg);
-
+void drawGame() {
   //Game State
   if (player.lives == 0 || player.coins == coins.length) {
     gameOver = true;
-    if(player.coins == coins.length){
+    if (player.coins == coins.length) {
       win = true;
     }
   }
 
 
-//Cthulhu states
+  //Cthulhu states
   currTime = millis();
   if (!cthulhu.active || recentDeath) {
     // check if the timer has reached the interval
@@ -191,22 +136,22 @@ void draw() {
 
   cthulhu.display();
 
-//Platform checks and physics
+  //Platform checks and physics
   for (int i = 0; i < platforms.length; i++) {
     boolean landed = player.checkPlatform(platforms[i]);
     if (landed) break;
   }
-  
-//Wall checks and physics
-  for(int i = 0; i < walls.length; i++) {
+
+  //Wall checks and physics
+  for (int i = 0; i < walls.length; i++) {
     boolean landed = player.checkWall(walls[i]);
-    if(landed) break;
+    if (landed) break;
   }
-  
+
 
   player.physics();
   //System.out.println("vy: " + player.vy);
-  
+
   //Coins and platforms display
   for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
@@ -221,13 +166,13 @@ void draw() {
   for (int i = 0; i < cover.length; i++) {
     cover[i].display();
   }
-  
-  for(int i = 0; i < walls.length; i++) {
+
+  for (int i = 0; i < walls.length; i++) {
     walls[i].display();
   }
-  
+
   player.display();
-  
+
 
   if (player.vy != 0 || player.jumping == true) {
     if (frameCount % 10 == 0) {
@@ -262,46 +207,46 @@ void draw() {
 
   player.isInCover = covered;
   //System.out.println(player.isInCover);
-  
-  
+
+
   //wall collision
-  for(int i = 0; i < walls.length; i++) {
+  for (int i = 0; i < walls.length; i++) {
     boolean temp = player.xPos + 10 > walls[i].xPos - walls[i].wallWidth/2 && player.xPos - 12 < walls[i].xPos + walls[i].wallWidth/2;
     temp &= player.yPos - 19 < walls[i].yPos + walls[i].wallHeight/2 && player.yPos + 16 > walls[i].yPos - walls[i].wallHeight/2;
 
     /*
     if(temp) {
-      stroke(#00FF00);
-      //line(player.xPos, player.yPos, walls[0].xPos - walls[0].wallWidth/2 - 11, player.yPos);
-      stroke(#FF0000);
-      //line(player.xPos, player.yPos, walls[0].xPos + walls[0].wallWidth/2 + 12, player.yPos);
-      stroke(#FF00FF);
-      //line(player.xPos, player.yPos, player.xPos, walls[0].yPos - walls[0].wallHeight/2 - 16.75);
-      stroke(#FFFF00);
-      //line(player.xPos, player.yPos, player.xPos, walls[0].yPos + walls[0].wallHeight/2 + 19.25);
-    }
-    */
-    
+     stroke(#00FF00);
+     //line(player.xPos, player.yPos, walls[0].xPos - walls[0].wallWidth/2 - 11, player.yPos);
+     stroke(#FF0000);
+     //line(player.xPos, player.yPos, walls[0].xPos + walls[0].wallWidth/2 + 12, player.yPos);
+     stroke(#FF00FF);
+     //line(player.xPos, player.yPos, player.xPos, walls[0].yPos - walls[0].wallHeight/2 - 16.75);
+     stroke(#FFFF00);
+     //line(player.xPos, player.yPos, player.xPos, walls[0].yPos + walls[0].wallHeight/2 + 19.25);
+     }
+     */
+
     float leftSide = dist(player.xPos, player.yPos, walls[i].xPos - walls[i].wallWidth/2 - 11, player.yPos);
     float topSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos - walls[i].wallHeight/2 - 16.75);
     float rightSide = dist(player.xPos, player.yPos, walls[i].xPos + walls[i].wallWidth/2 + 12, player.yPos);
     float bottomSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos + walls[i].wallHeight/2 + 19.25);
-  
-    if(temp) {
-      if(leftSide < topSide && leftSide < rightSide && leftSide < bottomSide) {
+
+    if (temp) {
+      if (leftSide < topSide && leftSide < rightSide && leftSide < bottomSide) {
         player.xPos = walls[i].xPos - walls[i].wallWidth/2 - 11;
-      } else if(topSide < leftSide && topSide < rightSide && topSide < bottomSide) {
+      } else if (topSide < leftSide && topSide < rightSide && topSide < bottomSide) {
         player.vy = 0;
         player.yPos = walls[i].yPos - walls[i].wallHeight/2 - 16.75;
-      } else if(rightSide < leftSide && rightSide < topSide && rightSide < bottomSide) {
+      } else if (rightSide < leftSide && rightSide < topSide && rightSide < bottomSide) {
         player.xPos = walls[i].xPos + walls[i].wallWidth/2 + 12;
-      } else if(bottomSide < leftSide && bottomSide < topSide && bottomSide < rightSide) {
+      } else if (bottomSide < leftSide && bottomSide < topSide && bottomSide < rightSide) {
         player.vy = 0;
         player.yPos = walls[i].yPos + walls[i].wallHeight/2 + 19;
       }
     }
   }
-  
+
   //death reset
   if (player.yPos > 850) {
     loseLife();
@@ -327,118 +272,207 @@ void draw() {
     text("Click Anywhere to Restart", width/3 - 65, height/2 + 42);
     paused = true;
     noLoop();
-  }
-  else if (!gameOver) {
+  } else if (!gameOver) {
     player.isDead = false;
+  }
+}
+
+void drawMainMenu() {
+}
+
+void setup() {
+  size(1200, 800);
+  music = new SoundFile(Cthulhu_Platformer.this, "theme.mp3");
+  coinSound = new SoundFile(this, "coin_collect.wav");
+  stareSound = new SoundFile(this, "cthulhu_stare.wav");
+  jump = new SoundFile(this, "jump.wav");
+  loseSound = new SoundFile(this, "lose_sound1.wav");
+  gameOverMusic = new SoundFile(this, "game_over_music.mp3");
+  fanfare = new SoundFile(this, "fanfare.wav");
+
+  player = new Player(3, 0, width/2, height/2);
+  cthulhu = new Cthulhu();
+  frameRate(50);
+  bckg = loadImage("background1.png");
+  bckg.resize(1200, 800);
+  coins = new Coin[6];
+  time = millis();
+  win = false;
+  diff = Difficulty.TUTORIAL;
+  inGame = true;
+
+  //init
+  coins[0] = new Coin(400, 525);
+  coins[1] = new Coin(255, 650);
+  coins[2] = new Coin(100, 265);
+  coins[3] = new Coin(600, 360);
+  coins[4] = new Coin(200, 360);
+  coins[5] = new Coin(700, 265);
+  platforms = new Platform[6];
+  platforms[0] = new Platform(400, 600, 200, 100, 1);
+  platforms[1] = new Platform(600, 450, 200, 50, 1);
+  platforms[2] = new Platform(200, 450, 200, 50, 1);
+  platforms[3] = new Platform(100, 350, 100, 50, 1);
+  platforms[4] = new Platform(250, 700, 100, 50, 1);
+  platforms[5] = new Platform(700, 350, 100, 50, 1);
+
+  cover  = new Cover[3];
+  //cover[0] = new Cover(450, 470, 40, 80, 155);
+  cover[0] = new Cover(300, 470, 60, 80, 1);
+  cover[1] = new Cover(240, 345, 60, 80, 1);
+  cover[2] = new Cover(500, 345, 60, 80, 1);
+
+  walls = new Wall[1];
+  walls[0] = new Wall(425, 440, 100, 100, 4);
+
+  //interval creation
+  interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
+  startTime = 0;
+  savedTime = 0;
+
+  //UIs and textboxes
+
+  //Game UI
+  Textbox[] textboxes = new Textbox[2];
+  textboxes[0] = new Textbox(width - 330, 50, 32, "Constantia-Bold-32.vlw", "Coins: ");
+  textboxes[1] = new Textbox(width - 130, 50, 32, "Constantia-Bold-32.vlw", "Lives: ");
+  Textbox textbox = new Textbox(65, 50, 32, "Constantia-Bold-32.vlw", "Pause");
+  ButtonUI pauseButton = new ButtonUI(113, 40, 200, 42, color(100), new PImage(), textbox);
+  ButtonUI[] buttons = new ButtonUI[1];
+  buttons[0] = pauseButton;
+  gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
+
+  //Pause UI
+
+
+  //Main Menu
+
+  gameOver = false;
+  recentDeath = false;
+  music.loop();
+}
+
+void draw() {
+  background(bckg);
+
+  if (inGame) {
+    drawGame();
+  } else {
+    drawMainMenu();
   }
 }
 
 
 
 void keyPressed() {
-  if (key == 'a' || keyCode == LEFT) {
-    player.left = true;
-  }
-  if (key == 'd' || keyCode == RIGHT) {
-    player.right = true;
-  }
+  if (inGame) {
+    if (key == 'a' || keyCode == LEFT) {
+      player.left = true;
+    }
+    if (key == 'd' || keyCode == RIGHT) {
+      player.right = true;
+    }
 
-  if (keyCode == SHIFT && !player.jumping) {
-    player.running = true;
-    player.speed = 3f;
-  }
-  if (key == ' ' && !player.jumping) {
-    player.vy = -player.jumpForce;
-    player.jumping = true;
-    jump.play();
-  }
+    if (keyCode == SHIFT && !player.jumping) {
+      player.running = true;
+      player.speed = 3f;
+    }
+    if (key == ' ' && !player.jumping) {
+      player.vy = -player.jumpForce;
+      player.jumping = true;
+      jump.play();
+    }
 
-  if (keyCode == SHIFT && !player.jumping) {
-    player.running = true;
-    player.speed = 3f;
-  }
-  if (key == ' ' && !player.jumping) {
-    player.vy = -player.jumpForce;
-    player.jumping = true;
-  }
+    if (keyCode == SHIFT && !player.jumping) {
+      player.running = true;
+      player.speed = 3f;
+    }
+    if (key == ' ' && !player.jumping) {
+      player.vy = -player.jumpForce;
+      player.jumping = true;
+    }
 
 
-  player.move();
-  if (keyCode == SHIFT && !player.jumping) {
-    player.running = true;
-    player.speed = 3f;
-  }
-  if (key == ' ' && !player.jumping) {
-    player.vy = -player.jumpForce;
-    player.jumping = true;
-    jump.play();
-  }
-
-  if (!paused) { 
     player.move();
-    if(!music.isPlaying()){
-      music.play();
+    if (keyCode == SHIFT && !player.jumping) {
+      player.running = true;
+      player.speed = 3f;
+    }
+    if (key == ' ' && !player.jumping) {
+      player.vy = -player.jumpForce;
+      player.jumping = true;
+      jump.play();
+    }
+
+    if (!paused) {
+      player.move();
+      if (!music.isPlaying()) {
+        music.play();
+      }
     }
   }
 }
 
 void keyReleased() {
-  if (key == 'a' || keyCode == LEFT) {
-    player.left = false;
-  }
-  if (key == 'd' || keyCode == RIGHT) {
-    player.right = false;
-  }
-  if (keyCode == SHIFT) {
-    player.running = false;
-    player.speed = 1.5f;
-  }
+  if (inGame) {
+    if (key == 'a' || keyCode == LEFT) {
+      player.left = false;
+    }
+    if (key == 'd' || keyCode == RIGHT) {
+      player.right = false;
+    }
+    if (keyCode == SHIFT) {
+      player.running = false;
+      player.speed = 1.5f;
+    }
 
-  player.move();
-  if (!paused) player.move();
+    player.move();
+  }
 }
 
 void mousePressed() {
-  if (gameOver) {
-    gameOver = false;
-    paused = false;
-    player.coins = 0;
-    player.lives = 3;
-    player.xPos = width/2;
-    player.yPos = height/2;
-    player.vy = 1.5f;
-    startTime = millis();
-    cthulhu.ascend = false;
-    cthulhu.descend = false;
-    cthulhu.holdStare = false;
-    cthulhu.active = false;
-    cthulhu.a = 0;
-    cthulhu.d = 0;
-    gameOverMusic.stop();
+  if (inGame) {
+    if (gameOver) {
+      gameOver = false;
+      paused = false;
+      player.coins = 0;
+      player.lives = 3;
+      player.xPos = width/2;
+      player.yPos = height/2;
+      player.vy = 1.5f;
+      startTime = millis();
+      cthulhu.ascend = false;
+      cthulhu.descend = false;
+      cthulhu.holdStare = false;
+      cthulhu.active = false;
+      cthulhu.a = 0;
+      cthulhu.d = 0;
+      gameOverMusic.stop();
 
 
-    for (int i = 0; i < coins.length; i++) {
-      coins[i].isCollected = false;
-    }
-
-    loop();
-  } else if (gameUI.buttons[0].isPressed()) {
-    paused = !paused;
-    if(stareSound.isPlaying()){
-      stareSound.pause();
+      for (int i = 0; i < coins.length; i++) {
+        coins[i].isCollected = false;
       }
-     if(!music.isPlaying() && !stareSound.isPlaying()){
-       music.play();
-     }
-    if (paused) {
-      text("Paused", width/2 - 60, height/2);
-      music.pause();
-      if(stareSound.isPlaying()){
-      stareSound.pause();
-      }
-      noLoop();
-    } else {
+
       loop();
+    } else if (gameUI.buttons[0].isPressed()) {
+      paused = !paused;
+      if (stareSound.isPlaying()) {
+        stareSound.pause();
+      }
+      if (!music.isPlaying() && !stareSound.isPlaying()) {
+        music.play();
+      }
+      if (paused) {
+        text("Paused", width/2 - 60, height/2);
+        music.pause();
+        if (stareSound.isPlaying()) {
+          stareSound.pause();
+        }
+        noLoop();
+      } else {
+        loop();
+      }
+    }
   }
-}
 }

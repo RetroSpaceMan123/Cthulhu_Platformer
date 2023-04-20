@@ -1,6 +1,6 @@
 //Main File
 import processing.sound.*;
-SoundFile music, coinSound, roar1, roar2, jump, stareSound, loseSound;
+SoundFile music, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare;
 
 Player player;
 Cthulhu cthulhu;
@@ -9,10 +9,9 @@ Coin[] coins;
 Platform[] platforms;
 Cover[] cover;
 Wall[] walls;
-boolean covered;
+boolean covered, paused, gameOver, recentDeath, win;
 int time;
 UI gameUI;
-boolean paused;
 
 int savedTime;
 int totalTime = 5000;
@@ -23,8 +22,6 @@ float startTime;
 float currTime = 0;          // initialize the timer
 float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
-boolean gameOver;
-boolean recentDeath;
 
 void loseLife() {
   player.coins = 0;
@@ -61,21 +58,23 @@ void loseLife() {
 
 
 void setup() {
-  size(800, 800);
+  size(1200, 800);
   music = new SoundFile(Cthulhu_Platformer.this, "theme.mp3");
   coinSound = new SoundFile(this, "coin_collect.wav");
-  roar1 = new SoundFile(this, "roar1.wav");
-  roar2 = new SoundFile(this, "roar2.wav");
   stareSound = new SoundFile(this, "cthulhu_stare.wav");
   jump = new SoundFile(this, "jump.wav");
   loseSound = new SoundFile(this, "lose_sound1.wav");
+  gameOverMusic = new SoundFile(this, "game_over_music.mp3");
+  fanfare = new SoundFile(this, "fanfare.wav");
+  
   player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
   bckg = loadImage("background1.png");
-  bckg.resize(800, 800);
+  bckg.resize(1200, 800);
   coins = new Coin[6];
   time = millis();
+  win = false;
   
   //init
   coins[0] = new Coin(400, 525);
@@ -126,6 +125,9 @@ void draw() {
   //Game State
   if (player.lives == 0 || player.coins == coins.length) {
     gameOver = true;
+    if(player.coins == coins.length){
+      win = true;
+    }
   }
 
 
@@ -314,8 +316,12 @@ void draw() {
   if (gameOver) {
     if (player.lives == 0) {
       text("You Lose", width/3 + 65, height/2);
+      music.stop();
+      gameOverMusic.play();
     } else if (player.coins == coins.length) {
       text("You Win", width/3 + 65, height/2);
+      music.stop();
+      fanfare.play();
     }
 
     text("Click Anywhere to Restart", width/3 - 65, height/2 + 42);
@@ -408,6 +414,7 @@ void mousePressed() {
     cthulhu.active = false;
     cthulhu.a = 0;
     cthulhu.d = 0;
+    gameOverMusic.stop();
 
 
     for (int i = 0; i < coins.length; i++) {
@@ -429,8 +436,6 @@ void mousePressed() {
       if(stareSound.isPlaying()){
       stareSound.pause();
       }
-      roar1.stop();
-      roar2.stop();
       noLoop();
     } else {
       loop();

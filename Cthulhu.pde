@@ -32,9 +32,10 @@ class Cthulhu {
   void display() {
     
     if(a == 11 && !descend){
+       music.pause();
       if(!stareSound.isPlaying()){
       stareSound.play(1.5);
-      music.pause();
+
       }
     }
     
@@ -45,7 +46,7 @@ class Cthulhu {
     else if(descend) {
       image(descending.get(d), xPos, yPos, 600, 600);
       stareSound.stop();
-      if(!music.isPlaying()){
+      if(!music.isPlaying() && d == 2){
       music.play();
       }
     }

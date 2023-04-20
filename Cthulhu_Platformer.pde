@@ -317,10 +317,7 @@ void keyPressed() {
 
   if (!paused) { 
     player.move();
-    if(!music.isPlaying()){
-      music.play();
     }
-  }
 }
 
 void keyReleased() {
@@ -364,71 +361,18 @@ void mousePressed() {
     loop();
   } else if (gameUI.buttons[0].isPressed()) {
     paused = !paused;
+    if(stareSound.isPlaying()){
+      stareSound.pause();
+      }
+     if(!music.isPlaying() && !stareSound.isPlaying()){
+       music.play();
+     }
     if (paused) {
       text("Paused", width/2 - 60, height/2);
       music.pause();
-      if(stareSound.isPlaying()){
-      stareSound.pause();
-      }
-      roar1.stop();
-      roar2.stop();
       noLoop();
-    } else loop();
+    } else {
+      loop();
   }
 }
-/*Player player;
- GameManager gameManager;
- 
- void setup() {
- size(800, 600);
- player = new Player(3, 0, width/2, height/2);
- gameManager = new GameManager(new Level[]{}, new UI[]{});
- }
- 
- void draw() {
- background(255);
- //gameManager.display();
- player.physics();
- player.display();
- 
- // Check for peeking
- if (player.isPeeking()) {
- gameManager.setPeeking(true);
- } else {
- gameManager.setPeeking(false);
- }
- 
- // Check for cover
- if (player.isPeeking()) {
- // Do something
- }
- 
- // Check for game over
- if (gameManager.gameOver) {
- // Do something
- }
- 
- // Check for pause screen
- if (gameManager.paused) {
- // Do something
- }
- }
- 
- void keyPressed() {
- player.move();
- 
- // Handle pause screen
- if (key == 'p' || keyCode == ESC) {
- gameManager.togglePause();
- }
- }
- 
- void keyReleased() {
- if (key == 'a' || key == 'd' || key == LEFT || key == RIGHT) {
- player.walking = false;
- player.vx = 0;
- }
- else if (key == ' ') {
- //player.vy /= 2; //Mess with this later
- }
- }*/
+}

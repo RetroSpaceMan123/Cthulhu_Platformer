@@ -219,7 +219,11 @@ void draw() {
   for (int i = 0; i < cover.length; i++) {
     cover[i].display();
   }
-  walls[0].display();
+  
+  for(int i = 0; i < walls.length; i++) {
+    walls[i].display();
+  }
+  
   player.display();
   
 

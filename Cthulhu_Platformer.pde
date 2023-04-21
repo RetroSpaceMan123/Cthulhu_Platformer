@@ -1,4 +1,4 @@
-//Main File
+//Main File //<>//
 import processing.sound.*;
 SoundFile music, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare;
 
@@ -260,16 +260,16 @@ void drawGame() {
 
   if (gameOver) {
     if (player.lives == 0) {
-      text("You Lose", width/3 + 65, height/2);
+      text("You Lose", width/2 - 65, height/2);
       music.stop();
       gameOverMusic.play();
     } else if (player.coins == coins.length) {
-      text("You Win", width/3 + 65, height/2);
+      text("You Win", width/2 - 65, height/2);
       music.stop();
       fanfare.play();
     }
 
-    text("Click Anywhere to Restart", width/3 - 65, height/2 + 42);
+    text("Click Anywhere to Return to the Main Level", width/2 - 265, height/2 + 42);
     paused = true;
     noLoop();
   } else if (!gameOver) {
@@ -344,6 +344,14 @@ void setup() {
   gameUI = new UI(buttons, textboxes, new PImage[0], new float[0], new float[0]);
 
   //Pause UI
+  Textbox[] pauseText = new Textbox[1];
+  pauseText[0] = new Textbox(width/2 - 60, 100, 32, "Constantia-Bold-32.vlw", "Paused");
+  ButtonUI[] pauseButtons = new ButtonUI[2];
+  Textbox unpause = new Textbox(width/2 - 120, 210, 32, "Constantia-Bold-32.vlw", "Return to Game");
+  pauseButtons[0] = new ButtonUI(width/2, 200, 300, 42, color(100), new PImage(), unpause);
+  Textbox back = new Textbox(width/2 - 120, 310, 32, "Constantia-Bold-32.vlw", "Return to Menu");
+  pauseButtons[1] = new ButtonUI(width/2, 300, 300, 42, color(100), new PImage(), back);
+  pauseMenu = new UI(pauseButtons, pauseText, new PImage[0], new float[0], new float[0]);
 
 
   //Main Menu
@@ -444,10 +452,11 @@ void keyReleased() {
 }
 
 void mousePressed() {
-  if (inGame) { //<>//
+  if (inGame) {
     if (gameOver) {
       gameOver = false;
       paused = false;
+      inGame = false;
       player.coins = 0;
       player.lives = 3;
       player.xPos = width/2;
@@ -476,20 +485,41 @@ void mousePressed() {
       if (!music.isPlaying() && !stareSound.isPlaying()) {
         music.play();
       }
-      if (paused) {
-        text("Paused", width/2 - 60, height/2);
-        music.pause();
-        if (stareSound.isPlaying()) {
-          stareSound.pause();
-        }
-        noLoop();
-      } else {
-        loop();
+    }
+    if (paused && pauseMenu.buttons[0].isPressed()) {
+      paused = false;
+      /*if (stareSound.isPlaying()) {
+       stareSound.pause();
+       }*/
+      if (!music.isPlaying() && !stareSound.isPlaying()) {
+        music.play();
       }
+    } else if (paused && pauseMenu.buttons[1].isPressed()) {
+      inGame = false;
+      paused = false;
+      loseLife();
+      player.lives = 3;
+      /*if (stareSound.isPlaying()) {
+       stareSound.pause();
+       }*/
+      if (!music.isPlaying() && !stareSound.isPlaying()) {
+        music.play();
+      }
+    }
+    if (paused) {
+      music.pause();
+      if (stareSound.isPlaying()) {
+        stareSound.pause();
+      }
+      pauseMenu.display();
+      noLoop();
+    } else {
+      loop();
     }
   } else {
     if (mainMenu.buttons[0].isPressed()) {
       inGame = true;
+      startTime = millis();
     } else if (mainMenu.buttons[1].isPressed()) {
       if (diff == Difficulty.TUTORIAL) {
         diff = Difficulty.EASY;

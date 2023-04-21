@@ -396,10 +396,10 @@ void draw() {
 
 void keyPressed() {
   if (inGame) {
-    if (key == 'a' || keyCode == LEFT) {
+    if (key == 'a' || key == 'A' || keyCode == LEFT) {
       player.left = true;
     }
-    if (key == 'd' || keyCode == RIGHT) {
+    if (key == 'd' || key == 'D' || keyCode == RIGHT) {
       player.right = true;
     }
 
@@ -445,10 +445,10 @@ void keyPressed() {
 
 void keyReleased() {
   if (inGame) {
-    if (key == 'a' || keyCode == LEFT) {
+    if (key == 'a' || key == 'A' || keyCode == LEFT) {
       player.left = false;
     }
-    if (key == 'd' || keyCode == RIGHT) {
+    if (key == 'd' || key == 'D' || keyCode == RIGHT) {
       player.right = false;
     }
     if (keyCode == SHIFT) {

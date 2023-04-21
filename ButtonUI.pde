@@ -29,7 +29,7 @@ class ButtonUI {
 
   //Detect if the button is pressed
   boolean isPressed() {
-    if (mouseY >= xPos - ButtonWidth/2 && mouseY <= xPos + ButtonWidth/2) {
+    if (mouseX >= xPos - ButtonWidth/2 && mouseX <= xPos + ButtonWidth/2) {
       if (mouseY >= yPos - ButtonHeight/2 && mouseY <= yPos + ButtonHeight/2) {
         return true;
       }

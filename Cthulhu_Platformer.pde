@@ -278,6 +278,7 @@ void drawGame() {
 }
 
 void drawMainMenu() {
+  mainMenu.display();
 }
 
 void setup() {
@@ -299,7 +300,7 @@ void setup() {
   time = millis();
   win = false;
   diff = Difficulty.TUTORIAL;
-  inGame = true;
+  inGame = false;
 
   //init
   coins[0] = new Coin(400, 525);
@@ -346,6 +347,18 @@ void setup() {
 
 
   //Main Menu
+  Textbox[] menuText = new Textbox[1];
+  menuText[0] = new Textbox(width/2 - 210, 120, 48, "Constantia-Bold-32.vlw", "Cthulhu Platformer");
+  ButtonUI[] menuButtons = new ButtonUI[4];
+  Textbox startText = new Textbox(width/2 - 85, 210, 32, "Constantia-Bold-32.vlw", "Start Game");
+  menuButtons[0] = new ButtonUI(width/2, 200, 300, 42, color(100), new PImage(), startText);
+  Textbox diffText = new Textbox(width/2 - 145, 310, 32, "Constantia-Bold-32.vlw", "Difficulty: Tutorial");
+  menuButtons[1] = new ButtonUI(width/2, 300, 300, 42, color(100), new PImage(), diffText);
+  Textbox credText = new Textbox(width/2 - 52, 410, 32, "Constantia-Bold-32.vlw", "Credits");
+  menuButtons[2] = new ButtonUI(width/2, 400, 300, 42, color(100), new PImage(), credText);
+  Textbox quitText = new Textbox(width/2 - 40, 510, 32, "Constantia-Bold-32.vlw", "Quit");
+  menuButtons[3] = new ButtonUI(width/2, 500, 300, 42, color(100), new PImage(), quitText);
+  mainMenu = new UI(menuButtons, menuText, new PImage[0], new float[0], new float[0]);
 
   gameOver = false;
   recentDeath = false;
@@ -431,7 +444,7 @@ void keyReleased() {
 }
 
 void mousePressed() {
-  if (inGame) {
+  if (inGame) { //<>//
     if (gameOver) {
       gameOver = false;
       paused = false;
@@ -473,6 +486,25 @@ void mousePressed() {
       } else {
         loop();
       }
+    }
+  } else {
+    if (mainMenu.buttons[0].isPressed()) {
+      inGame = true;
+    } else if (mainMenu.buttons[1].isPressed()) {
+      if (diff == Difficulty.TUTORIAL) {
+        diff = Difficulty.EASY;
+        mainMenu.buttons[1].textbox.Text = "Difficulty: Easy";
+      } else if (diff == Difficulty.EASY) {
+        diff = Difficulty.HARD;
+        mainMenu.buttons[1].textbox.Text = "Difficulty: Hard";
+      } else if (diff == Difficulty.HARD) {
+        diff = Difficulty.TUTORIAL;
+        mainMenu.buttons[1].textbox.Text = "Difficulty: Tutorial";
+      }
+    } else if (mainMenu.buttons[2].isPressed()) {
+      println("Load Credits Now!");
+    } else if (mainMenu.buttons[3].isPressed()) {
+      exit();
     }
   }
 }

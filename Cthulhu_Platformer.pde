@@ -1,10 +1,11 @@
 //Main File //<>//
 import processing.sound.*;
-SoundFile music, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare;
+SoundFile music, menuMusic, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare, confirm;
 
 Player player;
 Cthulhu cthulhu;
 PImage bckg;
+Level[] levels;
 Coin[] coins;
 Platform[] platforms;
 Cover[] cover;
@@ -42,9 +43,7 @@ void loseLife() {
 
   cthulhu.active = false;
   recentDeath = true;
-  if (!loseSound.isPlaying()) {
     loseSound.play();
-  }
 
   player.isDead = true;
   for (int i = 0; i < coins.length; i++) {
@@ -67,6 +66,12 @@ void loseLife() {
 
 
 void drawGame() {
+  if(menuMusic.isPlaying()){
+    menuMusic.stop();
+  }
+  if(!music.isPlaying()){
+      music.loop();
+  }
   //Game State
   if (player.lives == 0 || player.coins == coins.length) {
     gameOver = true;
@@ -150,7 +155,6 @@ void drawGame() {
 
 
   player.physics();
-  //System.out.println("vy: " + player.vy);
 
   //Coins and platforms display
   for (int i = 0; i < coins.length; i++) {
@@ -206,7 +210,6 @@ void drawGame() {
   }
 
   player.isInCover = covered;
-  //System.out.println(player.isInCover);
 
 
   //wall collision
@@ -279,11 +282,18 @@ void drawGame() {
 
 void drawMainMenu() {
   mainMenu.display();
+  if(music.isPlaying()){
+  music.stop(); }
+  if(!menuMusic.isPlaying()){
+  menuMusic.play();
+  }
 }
 
 void setup() {
   size(1200, 800);
   music = new SoundFile(Cthulhu_Platformer.this, "theme.mp3");
+  menuMusic = new SoundFile(this, "mystery.mp3");
+  confirm = new SoundFile(this, "menu_confirm.wav");
   coinSound = new SoundFile(this, "coin_collect.wav");
   stareSound = new SoundFile(this, "cthulhu_stare.wav");
   jump = new SoundFile(this, "jump.wav");
@@ -370,7 +380,6 @@ void setup() {
 
   gameOver = false;
   recentDeath = false;
-  music.loop();
 }
 
 void draw() {
@@ -518,7 +527,9 @@ void mousePressed() {
     }
   } else {
     if (mainMenu.buttons[0].isPressed()) {
+             confirm.play();
       inGame = true;
+      confirm.play();
       startTime = millis();
     } else if (mainMenu.buttons[1].isPressed()) {
       if (diff == Difficulty.TUTORIAL) {
@@ -533,6 +544,7 @@ void mousePressed() {
       }
     } else if (mainMenu.buttons[2].isPressed()) {
       println("Load Credits Now!");
+      confirm.play();
     } else if (mainMenu.buttons[3].isPressed()) {
       exit();
     }

@@ -2,23 +2,16 @@
 class Level {
   Coin[] coins;
   Platform[] platforms;
+  Wall[] walls;
   Cover[] covers;
-  ButtonItem[] buttonItems;
-  Player player;
-  Cthulhu cthulhu;
-  float playerX, playerY;
   PImage background;
 
-  Level(Coin[] cn, Platform[] pf, Cover[] cv, ButtonItem[] bt, Player pl, Cthulhu ct, float x, float y, String path) {
+  Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg) {
     coins = cn;
     platforms = pf;
     covers = cv;
-    buttonItems = bt;
-    player = pl;
-    cthulhu = ct;
-    playerX = x;
-    playerY = y;
-    background = loadImage(path);
+    walls = wl;
+    background = loadImage("background"+bg+".png");
   }
 
   //Display the Level
@@ -38,11 +31,5 @@ class Level {
       coins[i].display();
     }
 
-    for (int i = 0; i < buttonItems.length; i++) {
-      buttonItems[i].display();
-      buttonItems[i].getDoor().display();
-    }
-
-
   }
-};
+}

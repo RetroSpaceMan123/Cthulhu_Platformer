@@ -312,41 +312,41 @@ void setup() {
 
   // level initialization
   levels = new Level[3];
-  
-    // initialize tutorial level
+
+  // initialize tutorial level
   // ========================== TUTORIAL =================================
-  
+
   Coin[] coinsTutorial = new Coin[1];
   coinsTutorial[0] = new Coin(255, 650);
 
   Platform[] platformsTutorial = new Platform[2];
   platformsTutorial[0] = new Platform(400, 600, 200, 100, 1);
   platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
-  
+
   Cover[] coverTutorial = new Cover[1];
   coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
-  
+
   Wall[] wallsTutorial = new Wall[1];
   wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
-  
-  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
+
+  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial, 1, (float)(width/2), (float)(height/2));
 
   // initialize easy level
   // ================================= EASY ======================================
-  
-  Coin[] coinsEasy = new Coin[6];
-  
-  Wall[] wallsEasy = new Wall[8];
-  
-  Cover[] coverEasy = new Cover[10];
-  
-  Platform[] platformEasy = new Platform[13];
-  
-  
-  levels[1] = new Level(coinsEasy, platformEasy, coverEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
-  
 
-  
+  Coin[] coinsEasy = new Coin[6];
+
+  Wall[] wallsEasy = new Wall[8];
+
+  Cover[] coverEasy = new Cover[10];
+
+  Platform[] platformEasy = new Platform[13];
+
+
+  levels[1] = new Level(coinsEasy, platformEasy, coverEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
+
+
+
   //interval creation
   interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
@@ -390,13 +390,14 @@ void setup() {
   mainMenu = new UI(menuButtons, menuText, new PImage[0], new float[0], new float[0]);
 
   //Credits
-  Textbox[] creditText = new Textbox[6];
-  creditText[0] = new Textbox(width/2 - 100, 60, 48, "Constantia-Bold-32.vlw", "Credits");
-  creditText[1] = new Textbox(width/2 - 150, 162, 48, "Constantia-Bold-32.vlw", "Created By:");
-  creditText[2] = new Textbox(width/2 - 150, 244, 48, "Constantia-Bold-32.vlw", "Carlos Avila");
-  creditText[3] = new Textbox(width/2 - 150, 286, 48, "Constantia-Bold-32.vlw", "Eugene Gurary");
-  creditText[4] = new Textbox(width/2 - 150, 328, 48, "Constantia-Bold-32.vlw", "Peter Luchhino");
-  creditText[5] = new Textbox(width/2 - 150, 370, 48, "Constantia-Bold-32.vlw", "Bryan Torreblanca");
+  Textbox[] creditText = new Textbox[7];
+  creditText[0] = new Textbox(width/2 - 90, 60, 48, "Constantia-Bold-32.vlw", "Credits");
+  creditText[1] = new Textbox(width/2 - 125, 160, 48, "Constantia-Bold-32.vlw", "Created By:");
+  creditText[2] = new Textbox(200, 210, 24, "Constantia-Bold-32.vlw", "Carlos Avila, Eugene Gurary, Peter Luchhino, Bryan Torreblanca");
+  creditText[3] = new Textbox(width/2 - 75, 310, 48, "Constantia-Bold-32.vlw", "Art by:");
+  creditText[4] = new Textbox(100, 360, 24, "Constantia-Bold-32.vlw", "Penzilla, morgan3d, David G, Eugene Gurary, vkramnik, and some unnamed artists");
+  creditText[5] = new Textbox(width/2 - 100, 460, 48, "Constantia-Bold-32.vlw", "Music by:");
+  creditText[6] = new Textbox(100, 510, 24, "Constantia-Bold-32.vlw", "Erich Izdepski, Tausdei, Cabled Mess, Soundreality, Mixkit, AntumDeluge, ricniclas");
   ButtonUI[] creditButton = new ButtonUI[1];
   Textbox backText = new Textbox(width/2 - 40, 710, 32, "Constantia-Bold-32.vlw", "Back");
   creditButton[0] = new ButtonUI(width/2, 700, 300, 42, color(100), new PImage(), backText);

@@ -305,7 +305,7 @@ void setup() {
   gameOverMusic = new SoundFile(this, "game_over_music.mp3");
   fanfare = new SoundFile(this, "fanfare.wav");
 
-  //player = new Player(3, 0, width/2, height/2);
+  player = new Player();
   cthulhu = new Cthulhu();
   frameRate(50);
   bckg = loadImage("background1.png");

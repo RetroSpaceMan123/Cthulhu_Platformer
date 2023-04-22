@@ -28,8 +28,8 @@ class Player {
   Player() {
     lives = 3;
     coins = 0;
-    xPos = 0;
-    yPos = 0;
+    xPos = width/2;
+    yPos = height/2;
     f = 0;
     g = 0;
     h = 0;

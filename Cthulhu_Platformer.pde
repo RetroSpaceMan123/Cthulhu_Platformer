@@ -6,10 +6,6 @@ Player player;
 Cthulhu cthulhu;
 PImage bckg;
 Level[] levels;
-Coin[] coins;
-Platform[] platforms;
-Cover[] cover;
-Wall[] walls;
 boolean covered, paused, gameOver, recentDeath, win, inGame, inCredits;
 int time;
 UI gameUI;
@@ -300,7 +296,6 @@ void setup() {
   frameRate(50);
   bckg = loadImage("background1.png");
   bckg.resize(1200, 800);
-  coins = new Coin[6];
   time = millis();
   win = false;
   diff = Difficulty.TUTORIAL;
@@ -325,10 +320,7 @@ void setup() {
   Wall[] wallsTutorial = new Wall[1];
   wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
   
-  
-  
   levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
-  //init
 
   // initialize easy level
   // ================================= EASY ======================================
@@ -339,9 +331,10 @@ void setup() {
   
   Cover[] coverEasy = new Cover[10];
   
+  Platform[] platformEasy = new Platform[13];
   
   
-  levels[1] = new Level(coins, platforms, cover, walls, 1, (float)(width/2), (float)(height/2));
+  levels[1] = new Level(coinsEasy, platformEasy, coverEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
   
 
   

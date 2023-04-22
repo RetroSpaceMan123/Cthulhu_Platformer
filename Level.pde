@@ -14,13 +14,10 @@ class Level {
     coins = cn;
     platforms = pf;
     covers = cv;
-    buttonItems = bt;
-    enemies = em;
-    player = pl;
-    cthulhu = ct;
-    playerX = x;
-    playerY = y;
-    background = loadImage(path);
+    walls = wl;
+    background = loadImage("background"+bg+".png");
+    initX = x;
+    initY = y;
   }
 
   //Display the Level

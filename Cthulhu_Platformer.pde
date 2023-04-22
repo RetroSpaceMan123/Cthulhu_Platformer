@@ -1,4 +1,4 @@
-//Main File //<>// //<>// //<>// //<>//
+//Main File //<>// //<>// //<>// //<>// //<>//
 import processing.sound.*;
 SoundFile music, menuMusic, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare, confirm;
 
@@ -55,6 +55,9 @@ void loseLife() {
   cthulhu.descend = false;
   cthulhu.ascend = false;
   startTime = millis();
+  if(diff == Difficulty.TUTORIAL){
+    interval = random(6000,7000);
+  }
   interval = random(4000, 8000);
   cthulhu.active = false;
   cthulhu.holdStare = false;
@@ -262,12 +265,28 @@ void drawGame(int diffType) {
   } else if (!gameOver) {
     player.isDead = false;
   }
+  
+  if(diff == Difficulty.TUTORIAL && inGame){
+   textSize(20);
+   text("Use arrow keys to move!", 50, height/2 + 100); 
+   
+  
+   text("Press spacebar to jump", 420, height/2 + 50);
+   text("and collect coins!", 430, height/2 + 70);
+   
+   text("take cover to avoid Cthulhu!", 660, height/2 - 80);
+   textSize(50);
+   text ("<--", 840, height/2 - 20);
+   
+   textSize(20);
+   text("Collect all coins", 900, height/2 + 150);
+   text("to win!!", 950, height/2 + 170);
+   
+  }
 }
 
 void drawMainMenu() {
   background(bckg);
-
-  line(width/2, 0, width/2, height);
 
   if (inCredits) {
     credits.display();
@@ -311,20 +330,25 @@ void setup() {
     // initialize tutorial level
   // ========================== TUTORIAL =================================
   
-  Coin[] coinsTutorial = new Coin[1];
-  coinsTutorial[0] = new Coin(255, 650);
-
-  Platform[] platformsTutorial = new Platform[2];
-  platformsTutorial[0] = new Platform(400, 600, 200, 100, 1);
-  platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
+   Coin[] coinsTutorial = new Coin[3];
   
+ 
+ coinsTutorial[0] = new Coin(500, 500); 
+  coinsTutorial[1] = new Coin(width/2 + 200, 380);
+  coinsTutorial[2] = new Coin(width/2 + 380, 600);
+  Platform[] platformsTutorial = new Platform[1];
+  //PLATFORM INFO  PLATFORM(float xPos, float yPos, float width, float height, int num)
+  platformsTutorial[0] = new Platform(width / 2 + 80,550,100,30,1);
   Cover[] coverTutorial = new Cover[1];
-  coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
-  
-  Wall[] wallsTutorial = new Wall[1];
-  wallsTutorial[0] = new Wall(425, 440, 100, 100, 1);
-  
-  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
+  //COVER INFO  Cover(float xPos, float yPos, float width, float height, int num)
+  coverTutorial[0] = new Cover(width / 2 + 200, 380, 70, 70, 1);
+  Wall[] wallsTutorial = new Wall[2];
+  // WALL INFO  Wall(float xPos, float yPos, float width, float height, int num)
+  wallsTutorial[0] = new Wall(width / 2, 700, width, 100, 1); 
+  wallsTutorial[1] = new Wall(width / 2 + 200, 530, 150, 240, 1);
+  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, 100, (float)(height/2));
+  player.xPos = levels[diffType].initX;
+  player.yPos = levels[diffType].initY;
 
   // initialize easy level
   // ================================= EASY ======================================
@@ -349,7 +373,7 @@ void setup() {
   player.yPos = levels[diffType].initY;
   
   //interval creation
-  interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
+  interval = random(6000, 7000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
   savedTime = 0;
 
@@ -413,6 +437,7 @@ void draw() {
   if (inGame) {
 
     if (diff == Difficulty.TUTORIAL) {
+      player.lives = 10000;
       diffType = 0;
       drawGame(0);
     } else if (diff == Difficulty.EASY) {

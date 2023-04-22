@@ -39,5 +39,6 @@ class Coin {
       player.coins++;
         coinSound.play();
       }
+      
     }
   }

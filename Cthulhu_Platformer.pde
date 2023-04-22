@@ -402,10 +402,6 @@ void setup() {
   levels[1] = new Level(coinsEasy, platformsEasy, coversEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
   
 
-  Coin[] coinsEasy = new Coin[6];
-
-  Wall[] wallsEasy = new Wall[8];
-
   Cover[] coverEasy = new Cover[10];
 
   Platform[] platformEasy = new Platform[13];

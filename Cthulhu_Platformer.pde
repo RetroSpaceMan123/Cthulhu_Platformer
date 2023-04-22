@@ -10,11 +10,12 @@ Coin[] coins;
 Platform[] platforms;
 Cover[] cover;
 Wall[] walls;
-boolean covered, paused, gameOver, recentDeath, win, inGame;
+boolean covered, paused, gameOver, recentDeath, win, inGame, inCredits;
 int time;
 UI gameUI;
 UI pauseMenu;
 UI mainMenu;
+UI credits;
 int diffType;
 
 enum Difficulty {
@@ -45,7 +46,7 @@ void loseLife() {
 
   cthulhu.active = false;
   recentDeath = true;
-    loseSound.play();
+  loseSound.play();
 
   player.isDead = true;
   for (int i = 0; i < levels[diffType].coins.length; i++) {
@@ -68,11 +69,11 @@ void loseLife() {
 
 
 void drawGame(int diffType) {
-  if(menuMusic.isPlaying()){
+  if (menuMusic.isPlaying()) {
     menuMusic.stop();
   }
-  if(!music.isPlaying()){
-      music.loop();
+  if (!music.isPlaying()) {
+    music.loop();
   }
   //Game State
   if (player.lives == 0 || player.coins == levels[diffType].coins.length) {
@@ -141,8 +142,6 @@ void drawGame(int diffType) {
     }
   }
 
-  cthulhu.display();
-  
 
   //Platform checks and physics
   for (int i = 0; i < levels[diffType].platforms.length; i++) {
@@ -158,10 +157,10 @@ void drawGame(int diffType) {
 
 
   player.physics();
-  
+
 
   //Coins and platforms display
-  for (int i = 0; i < levels[diffType].coins.length; i++) {
+  /*for (int i = 0; i < levels[diffType].coins.length; i++) {
     if (frameCount % 6 == 0) {
       levels[diffType].coins[i].i = (levels[diffType].coins[i].i+1)%10;
     }
@@ -177,8 +176,10 @@ void drawGame(int diffType) {
 
   for (int i = 0; i < levels[diffType].walls.length; i++) {
     levels[diffType].walls[i].display();
-  }
+  }*/
 
+  levels[diffType].display();
+  
   player.display();
 
 
@@ -274,10 +275,11 @@ void drawGame(int diffType) {
 
 void drawMainMenu() {
   mainMenu.display();
-  if(music.isPlaying()){
-  music.stop(); }
-  if(!menuMusic.isPlaying()){
-  menuMusic.play();
+  if (music.isPlaying()) {
+    music.stop();
+  }
+  if (!menuMusic.isPlaying()) {
+    menuMusic.play();
   }
 }
 
@@ -303,7 +305,7 @@ void setup() {
   win = false;
   diff = Difficulty.TUTORIAL;
   inGame = false;
-  
+
   // level initialization
   levels = new Level[3];
   
@@ -312,9 +314,9 @@ void setup() {
   
   Coin[] coinsTutorial = new Coin[1];
   coinsTutorial[0] = new Coin(255, 650);
-  
+
   Platform[] platformsTutorial = new Platform[2];
-  platformsTutorial[0] = new Platform(400,600,200,100,1);
+  platformsTutorial[0] = new Platform(400, 600, 200, 100, 1);
   platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
   
   Cover[] coverTutorial = new Cover[1];
@@ -384,31 +386,27 @@ void setup() {
   Textbox quitText = new Textbox(width/2 - 40, 510, 32, "Constantia-Bold-32.vlw", "Quit");
   menuButtons[3] = new ButtonUI(width/2, 500, 300, 42, color(100), new PImage(), quitText);
   mainMenu = new UI(menuButtons, menuText, new PImage[0], new float[0], new float[0]);
-  
-  
+
+
   gameOver = false;
   recentDeath = false;
 }
 
 void draw() {
-  background(bckg);
-
   if (inGame) {
-    
-    if (diff == Difficulty.TUTORIAL){
-    diffType = 0;
-    drawGame(0);
-    }
-    else if (diff == Difficulty.EASY){
+
+    if (diff == Difficulty.TUTORIAL) {
+      diffType = 0;
+      drawGame(0);
+    } else if (diff == Difficulty.EASY) {
       diffType = 1;
       drawGame(1);
-    }
-    else if(diff == Difficulty.HARD){
-      diffType = 2;    
+    } else if (diff == Difficulty.HARD) {
+      diffType = 2;
       drawGame(2);
     }
-  } 
-  else {
+  } else {
+    background(bckg);
     drawMainMenu();
   }
 }
@@ -528,8 +526,8 @@ void mousePressed() {
       inGame = false;
       paused = false;
       loseLife();
-      if(diff != Difficulty.TUTORIAL){
-      player.lives = 3;
+      if (diff != Difficulty.TUTORIAL) {
+        player.lives = 3;
       }
       /*if (stareSound.isPlaying()) {
        stareSound.pause();
@@ -550,7 +548,7 @@ void mousePressed() {
     }
   } else {
     if (mainMenu.buttons[0].isPressed()) {
-             confirm.play();
+      confirm.play();
       inGame = true;
       confirm.play();
       startTime = millis();

@@ -35,6 +35,9 @@ class Level {
     for (int i = 0; i < coins.length; i++) {
       coins[i].display();
     }
-    
+
+    for (int i = 0; i < walls.length; i++) {
+      walls[i].display();
+    }
   }
 }

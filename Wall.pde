@@ -9,7 +9,7 @@ class Wall {
     yPos = y;
     wallWidth = w;
     wallHeight = h;
-    wallImage = loadImage("wall"+num+".jpeg");
+    wallImage = loadImage("wall"+num+".png");
   }
 
   void display() {

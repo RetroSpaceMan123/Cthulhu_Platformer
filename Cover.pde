@@ -14,7 +14,7 @@ class Cover {
   }
 
   void display() {
-    imageMode(CORNER);
+    imageMode(CENTER);
     image(coverImage, xPos, yPos, coverWidth, coverHeight);
   }
 };

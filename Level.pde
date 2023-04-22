@@ -13,7 +13,6 @@ class Level {
     covers = cv;
     walls = wl;
     background = loadImage("background"+bg+".png");
-
     initX = x;
     initY = y;
   }

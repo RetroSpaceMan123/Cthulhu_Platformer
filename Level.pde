@@ -4,23 +4,23 @@ class Level {
   Platform[] platforms;
   Wall[] walls;
   Cover[] covers;
-  Player player;
   PImage background;
   float initX, initY;
 
-  Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg, Player plyr, float x, float y) {
+  Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg, float x, float y) {
     coins = cn;
     platforms = pf;
     covers = cv;
     walls = wl;
     background = loadImage("background"+bg+".png");
-    player = plyr;
+
     initX = x;
     initY = y;
   }
 
   //Display the Level
   void display() {
+    background.resize(1200, 800);
     background(background);
     cthulhu.display();
 
@@ -36,6 +36,5 @@ class Level {
       coins[i].display();
     }
     
-    player.display();
   }
 }

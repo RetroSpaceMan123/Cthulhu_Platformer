@@ -1,6 +1,5 @@
 import processing.sound.*;
 
-
 class Coin {
   float xPos, yPos;
   boolean isCollected;
@@ -26,6 +25,7 @@ class Coin {
   }
 
   void collect(){    
+    
     boolean collisionCheck = player.xPos - 25 <= xPos && player.xPos + 23 >= xPos;
     collisionCheck &= player.yPos + 37 >= yPos && player.yPos - 34 <= yPos;
     if(player.yPos >= yPos) {
@@ -38,6 +38,10 @@ class Coin {
       isCollected = true;
       player.coins++;
         coinSound.play();
+      }
+      // for testing
+      if(isCollected){
+      println(isCollected);
       }
     }
   }

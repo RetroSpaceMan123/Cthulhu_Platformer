@@ -9,7 +9,7 @@ class Platform {
     yPos = y;
     platformWidth = w;
     platformHeight = h;
-    platformImage = loadImage("wall"+num+".png");
+    platformImage = loadImage("platform"+num+".png");
   }
 
   void display() {

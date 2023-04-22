@@ -1,4 +1,4 @@
-//Main File //<>// //<>//
+//Main File
 import processing.sound.*;
 SoundFile music, menuMusic, coinSound, jump, stareSound, loseSound, gameOverMusic, fanfare, confirm;
 
@@ -15,7 +15,7 @@ int time;
 UI gameUI;
 UI pauseMenu;
 UI mainMenu;
-int diffType;
+
 
 enum Difficulty {
   TUTORIAL,
@@ -34,7 +34,6 @@ float currTime = 0;          // initialize the timer
 float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
 
-
 void loseLife() {
   player.coins = 0;
   player.lives--;
@@ -48,8 +47,8 @@ void loseLife() {
     loseSound.play();
 
   player.isDead = true;
-  for (int i = 0; i < levels[diffType].coins.length; i++) {
-    levels[diffType].coins[i].isCollected = false;
+  for (int i = 0; i < coins.length; i++) {
+    coins[i].isCollected = false;
   }
 
   cthulhu.a = 0;
@@ -67,7 +66,24 @@ void loseLife() {
 }
 
 
-void drawGame(int diffType) {
+Coin[] coinsTutorial;
+Platform[] platformsTutorial;
+Cover[] coverTutorial;
+Wall[] wallsTutorial;
+
+/*
+--- Tutorial ---
+ - display all steps at once 
+
+ - move player with arrow keys, jump, sprint
+ - collect a coin
+ - hide from cthulhu if not lose a life 
+*/
+void tutorialMode() {
+  
+}
+
+void drawGame() {
   if(menuMusic.isPlaying()){
     menuMusic.stop();
   }
@@ -75,9 +91,9 @@ void drawGame(int diffType) {
       music.loop();
   }
   //Game State
-  if (player.lives == 0 || player.coins == levels[diffType].coins.length) {
+  if (player.lives == 0 || player.coins == coins.length) {
     gameOver = true;
-    if (player.coins == levels[diffType].coins.length) {
+    if (player.coins == coins.length) {
       win = true;
     }
   }
@@ -142,41 +158,39 @@ void drawGame(int diffType) {
   }
 
   cthulhu.display();
-  
 
   //Platform checks and physics
-  for (int i = 0; i < levels[diffType].platforms.length; i++) {
-    boolean landed = player.checkPlatform(levels[diffType].platforms[i]);
+  for (int i = 0; i < platforms.length; i++) {
+    boolean landed = player.checkPlatform(platforms[i]);
     if (landed) break;
   }
 
   //Wall checks and physics
-  for (int i = 0; i < levels[diffType].walls.length; i++) {
-    boolean landed = player.checkWall(levels[diffType].walls[i]);
+  for (int i = 0; i < walls.length; i++) {
+    boolean landed = player.checkWall(walls[i]);
     if (landed) break;
   }
 
 
   player.physics();
-  
 
   //Coins and platforms display
-  for (int i = 0; i < levels[diffType].coins.length; i++) {
+  for (int i = 0; i < coins.length; i++) {
     if (frameCount % 6 == 0) {
-      levels[diffType].coins[i].i = (levels[diffType].coins[i].i+1)%10;
+      coins[i].i = (coins[i].i+1)%10;
     }
-    levels[diffType].coins[i].display();
+    coins[i].display();
   }
 
-  for (int i = 0; i < levels[diffType].platforms.length; i++) {
-    levels[diffType].platforms[i].display();
+  for (int i = 0; i < platforms.length; i++) {
+    platforms[i].display();
   }
-  for (int i = 0; i < levels[diffType].covers.length; i++) {
-    levels[diffType].covers[i].display();
+  for (int i = 0; i < cover.length; i++) {
+    cover[i].display();
   }
 
-  for (int i = 0; i < levels[diffType].walls.length; i++) {
-    levels[diffType].walls[i].display();
+  for (int i = 0; i < walls.length; i++) {
+    walls[i].display();
   }
 
   player.display();
@@ -207,9 +221,9 @@ void drawGame(int diffType) {
   //cover logic
   covered = false;
 
-  for (int i = 0; i < levels[diffType].covers.length; i++) {
-    boolean temp = player.xPos + 10 <= levels[diffType].covers[i].xPos + levels[diffType].covers[i].coverWidth && player.xPos - 15 >= levels[diffType].covers[i].xPos;
-    temp &= player.yPos - 18 >= levels[diffType].covers[i].yPos && player.yPos + 10 <= levels[diffType].covers[i].yPos + levels[diffType].covers[i].coverHeight;
+  for (int i = 0; i < cover.length; i++) {
+    boolean temp = player.xPos + 10 <= cover[i].xPos + cover[i].coverWidth && player.xPos - 15 >= cover[i].xPos;
+    temp &= player.yPos - 18 >= cover[i].yPos && player.yPos + 10 <= cover[i].yPos + cover[i].coverHeight;
     covered |= temp;
   }
 
@@ -217,9 +231,9 @@ void drawGame(int diffType) {
 
 
   //wall collision
-  for (int i = 0; i < levels[diffType].walls.length; i++) {
-    boolean temp = player.xPos + 10 > levels[diffType].walls[i].xPos - levels[diffType].walls[i].wallWidth/2 && player.xPos - 12 < levels[diffType].walls[i].xPos + levels[diffType].walls[i].wallWidth/2;
-    temp &= player.yPos - 19 < levels[diffType].walls[i].yPos + levels[diffType].walls[i].wallHeight/2 && player.yPos + 16 > levels[diffType].walls[i].yPos - levels[diffType].walls[i].wallHeight/2;
+  for (int i = 0; i < walls.length; i++) {
+    boolean temp = player.xPos + 10 > walls[i].xPos - walls[i].wallWidth/2 && player.xPos - 12 < walls[i].xPos + walls[i].wallWidth/2;
+    temp &= player.yPos - 19 < walls[i].yPos + walls[i].wallHeight/2 && player.yPos + 16 > walls[i].yPos - walls[i].wallHeight/2;
 
     /*
     if(temp) {
@@ -234,22 +248,22 @@ void drawGame(int diffType) {
      }
      */
 
-    float leftSide = dist(player.xPos, player.yPos, levels[diffType].walls[i].xPos - levels[diffType].walls[i].wallWidth/2 - 11, player.yPos);
-    float topSide = dist(player.xPos, player.yPos, player.xPos, levels[diffType].walls[i].yPos - levels[diffType].walls[i].wallHeight/2 - 16.75);
-    float rightSide = dist(player.xPos, player.yPos, levels[diffType].walls[i].xPos + levels[diffType].walls[i].wallWidth/2 + 12, player.yPos);
-    float bottomSide = dist(player.xPos, player.yPos, player.xPos, levels[diffType].walls[i].yPos + levels[diffType].walls[i].wallHeight/2 + 19.25);
+    float leftSide = dist(player.xPos, player.yPos, walls[i].xPos - walls[i].wallWidth/2 - 11, player.yPos);
+    float topSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos - walls[i].wallHeight/2 - 16.75);
+    float rightSide = dist(player.xPos, player.yPos, walls[i].xPos + walls[i].wallWidth/2 + 12, player.yPos);
+    float bottomSide = dist(player.xPos, player.yPos, player.xPos, walls[i].yPos + walls[i].wallHeight/2 + 19.25);
 
     if (temp) {
       if (leftSide < topSide && leftSide < rightSide && leftSide < bottomSide) {
-        player.xPos = levels[diffType].walls[i].xPos - levels[diffType].walls[i].wallWidth/2 - 11;
+        player.xPos = walls[i].xPos - walls[i].wallWidth/2 - 11;
       } else if (topSide < leftSide && topSide < rightSide && topSide < bottomSide) {
         player.vy = 0;
-        player.yPos = levels[diffType].walls[i].yPos - levels[diffType].walls[i].wallHeight/2 - 16.75;
+        player.yPos = walls[i].yPos - walls[i].wallHeight/2 - 16.75;
       } else if (rightSide < leftSide && rightSide < topSide && rightSide < bottomSide) {
-        player.xPos = levels[diffType].walls[i].xPos + levels[diffType].walls[i].wallWidth/2 + 12;
+        player.xPos = walls[i].xPos + walls[i].wallWidth/2 + 12;
       } else if (bottomSide < leftSide && bottomSide < topSide && bottomSide < rightSide) {
         player.vy = 0;
-        player.yPos = levels[diffType].walls[i].yPos + levels[diffType].walls[i].wallHeight/2 + 19;
+        player.yPos = walls[i].yPos + walls[i].wallHeight/2 + 19;
       }
     }
   }
@@ -260,7 +274,7 @@ void drawGame(int diffType) {
   }
 
   //Update the in-game UI
-  gameUI.textboxes[0].Text = "Coins: " + player.coins + '/' + levels[diffType].coins.length;
+  gameUI.textboxes[0].Text = "Coins: " + player.coins + '/' + coins.length;
   gameUI.textboxes[1].Text = "Lives: " + player.lives;
   //Display the in-game UI
   gameUI.display();
@@ -270,7 +284,7 @@ void drawGame(int diffType) {
       text("You Lose", width/2 - 65, height/2);
       music.stop();
       gameOverMusic.play();
-    } else if (player.coins == levels[diffType].coins.length) {
+    } else if (player.coins == coins.length) {
       text("You Win", width/2 - 65, height/2);
       music.stop();
       fanfare.play();
@@ -305,7 +319,7 @@ void setup() {
   gameOverMusic = new SoundFile(this, "game_over_music.mp3");
   fanfare = new SoundFile(this, "fanfare.wav");
 
-  //player = new Player(3, 0, width/2, height/2);
+  player = new Player(3, 0, width/2, height/2);
   cthulhu = new Cthulhu();
   frameRate(50);
   bckg = loadImage("background1.png");
@@ -315,10 +329,7 @@ void setup() {
   win = false;
   diff = Difficulty.TUTORIAL;
   inGame = false;
-  
-  // level initialization
-  levels = new Level[3];
-  
+
   //init
   coins[0] = new Coin(400, 525);
   coins[1] = new Coin(255, 650);
@@ -342,29 +353,18 @@ void setup() {
 
   walls = new Wall[1];
   walls[0] = new Wall(425, 440, 100, 100, 4);
-  // Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg, Player plyr, float x, float y)
   
-  levels[1] = new Level(coins, platforms, cover, walls, 1, (float)(width/2), (float)(height/2));
-  
-  
-  // initialize tutorial level
-  // ========================== TUTORIAL =================================
-  //Player playerTutorial = new Player(10000, 0, width/2, height/2);
-  
-  Coin[] coinsTutorial = new Coin[1];
-  coinsTutorial[0] = new Coin(255, 650);
-  
-  Platform[] platformsTutorial = new Platform[2];
-  platformsTutorial[0] = new Platform(400,600,200,100,1);
+  // TUTORIAL STUFFFFFFFFFFFFF ------------------------------------
+  // collect a coin 
+  coinsTutorial[1] = new Coin(400,525);
+  platformsTutorial = new Platform[2];
+  platformsTutorial[0] =new Platform(400, 600, 200, 100, 1);
   platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
-  Cover[] coverTutorial = new Cover[1];
-  coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
-  Wall[] wallsTutorial = new Wall[1];
+  cover = new Cover[1];
+  cover[0] = new Cover(300, 470, 60, 80, 1);
+  wallsTutorial = new Wall[1];
   wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
-  
-  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
-  
-  
+
   //interval creation
   interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
@@ -406,8 +406,7 @@ void setup() {
   Textbox quitText = new Textbox(width/2 - 40, 510, 32, "Constantia-Bold-32.vlw", "Quit");
   menuButtons[3] = new ButtonUI(width/2, 500, 300, 42, color(100), new PImage(), quitText);
   mainMenu = new UI(menuButtons, menuText, new PImage[0], new float[0], new float[0]);
-  
-  
+
   gameOver = false;
   recentDeath = false;
 }
@@ -416,21 +415,8 @@ void draw() {
   background(bckg);
 
   if (inGame) {
-    
-    if (diff == Difficulty.TUTORIAL){
-    diffType = 0;
-    drawGame(0);
-    }
-    else if (diff == Difficulty.EASY){
-      diffType = 1;
-      drawGame(1);
-    }
-    else if(diff == Difficulty.HARD){
-      diffType = 2;    
-      drawGame(2);
-    }
-  } 
-  else {
+    drawGame();
+  } else {
     drawMainMenu();
   }
 }
@@ -439,10 +425,10 @@ void draw() {
 
 void keyPressed() {
   if (inGame) {
-    if (key == 'a' || key == 'A' || keyCode == LEFT) {
+    if (key == 'a' || keyCode == LEFT) {
       player.left = true;
     }
-    if (key == 'd' || key == 'D' || keyCode == RIGHT) {
+    if (key == 'd' || keyCode == RIGHT) {
       player.right = true;
     }
 
@@ -488,10 +474,10 @@ void keyPressed() {
 
 void keyReleased() {
   if (inGame) {
-    if (key == 'a' || key == 'A' || keyCode == LEFT) {
+    if (key == 'a' || keyCode == LEFT) {
       player.left = false;
     }
-    if (key == 'd' || key == 'D' || keyCode == RIGHT) {
+    if (key == 'd' || keyCode == RIGHT) {
       player.right = false;
     }
     if (keyCode == SHIFT) {
@@ -524,8 +510,8 @@ void mousePressed() {
       gameOverMusic.stop();
 
 
-      for (int i = 0; i < levels[diffType].coins.length; i++) {
-        levels[diffType].coins[i].isCollected = false;
+      for (int i = 0; i < coins.length; i++) {
+        coins[i].isCollected = false;
       }
 
       loop();
@@ -550,9 +536,7 @@ void mousePressed() {
       inGame = false;
       paused = false;
       loseLife();
-      if(diff != Difficulty.TUTORIAL){
       player.lives = 3;
-      }
       /*if (stareSound.isPlaying()) {
        stareSound.pause();
        }*/

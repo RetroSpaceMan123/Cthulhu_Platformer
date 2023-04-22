@@ -7,6 +7,7 @@ class Player {
   int h; //frame counter for jump
   int j; //frame counter for run
   int k; //frame counter for death
+  int defaultLives = 3;
   boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform = false, isOnWall = false, isInCover = false, isDead = false;
   float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run, death;
@@ -37,14 +38,6 @@ class Player {
     loadSprites();
   }
 
-  //Constructor for starting levels
-  Player(int L, int C, int x, int y) {
-    lives = L;
-    coins = C;
-    xPos = x;
-    yPos = y;
-    loadSprites();
-  }
 
   //Displays the player
   void display() {

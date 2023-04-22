@@ -34,6 +34,12 @@ float currTime = 0;          // initialize the timer
 float interval = 0;       // initialize the interval
 boolean pointReached; // cthulhu
 
+void tutorialMode() {
+  // size is 1200 x 800
+  player.xPos = levels[diffType].initX;
+  player.yPos = levels[diffType].initY;
+}
+
 
 void loseLife() {
   player.coins = 0;
@@ -67,7 +73,7 @@ void loseLife() {
 }
 
 
-void drawGame(int diffType) {
+void drawGame() {
   if(menuMusic.isPlaying()){
     menuMusic.stop();
   }
@@ -179,7 +185,9 @@ void drawGame(int diffType) {
     levels[diffType].walls[i].display();
   }
 
+  
   player.display();
+  
 
 
   if (player.vy != 0 || player.jumping == true) {
@@ -214,7 +222,10 @@ void drawGame(int diffType) {
   }
 
   player.isInCover = covered;
-
+  if (player.isInCover){
+    println("In cover");
+  }
+ 
 
   //wall collision
   for (int i = 0; i < levels[diffType].walls.length; i++) {
@@ -264,7 +275,13 @@ void drawGame(int diffType) {
   gameUI.textboxes[1].Text = "Lives: " + player.lives;
   //Display the in-game UI
   gameUI.display();
-
+  
+  if (diff == Difficulty.TUTORIAL && !gameOver){
+    player.lives = 10000;
+    
+    // now di
+  }
+  
   if (gameOver) {
     if (player.lives == 0) {
       text("You Lose", width/2 - 65, height/2);
@@ -319,6 +336,25 @@ void setup() {
   // level initialization
   levels = new Level[3];
   
+   // initialize tutorial level
+  // ========================== TUTORIAL =================================
+  Coin[] coinsTutorial = new Coin[3];
+  coinsTutorial[0] = new Coin(255, 650); 
+  coinsTutorial[1] = new Coin(400, 500);
+  coinsTutorial[2] = new Coin(600,700);
+  Platform[] platformsTutorial = new Platform[1];
+  //PLATFORM INFO  PLATFORM(float xPos, float yPos, float width, float height, int num)
+  platformsTutorial[0] = new Platform(width / 2 + 80,550,100,30,1);
+  Cover[] coverTutorial = new Cover[1];
+  //COVER INFO  Cover(float xPos, float yPos, float width, float height, int num)
+  coverTutorial[0] = new Cover(width / 2 + 200, 380, 70, 70, 1);
+  Wall[] wallsTutorial = new Wall[2];
+  // WALL INFO  Wall(float xPos, float yPos, float width, float height, int num)
+  wallsTutorial[0] = new Wall(width / 2, 700, width, 100, 1); 
+  wallsTutorial[1] = new Wall(width / 2 + 200, 530, 150, 240, 1);
+  
+  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1,(float)(width/2), (float)(height/2));
+  
   //init
   coins[0] = new Coin(400, 525);
   coins[1] = new Coin(255, 650);
@@ -341,29 +377,13 @@ void setup() {
   cover[2] = new Cover(500, 345, 60, 80, 1);
 
   walls = new Wall[1];
-  walls[0] = new Wall(425, 440, 100, 100, 4);
+  walls[0] = new Wall(425, 440, 100, 100, 3);
   // Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg, Player plyr, float x, float y)
   
   levels[1] = new Level(coins, platforms, cover, walls, 1, (float)(width/2), (float)(height/2));
   
   
-  // initialize tutorial level
-  // ========================== TUTORIAL =================================
-  //Player playerTutorial = new Player(10000, 0, width/2, height/2);
-  
-  Coin[] coinsTutorial = new Coin[1];
-  coinsTutorial[0] = new Coin(255, 650);
-  
-  Platform[] platformsTutorial = new Platform[2];
-  platformsTutorial[0] = new Platform(400,600,200,100,1);
-  platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
-  Cover[] coverTutorial = new Cover[1];
-  coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
-  Wall[] wallsTutorial = new Wall[1];
-  wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
-  
-  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
-  
+ 
   
   //interval creation
   interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
@@ -418,16 +438,20 @@ void draw() {
   if (inGame) {
     
     if (diff == Difficulty.TUTORIAL){
+    
     diffType = 0;
-    drawGame(0);
+    println("diffType: " + diffType);
+    drawGame();
     }
     else if (diff == Difficulty.EASY){
       diffType = 1;
-      drawGame(1);
+      println("diffType: " + diffType);
+      drawGame();
     }
     else if(diff == Difficulty.HARD){
       diffType = 2;    
-      drawGame(2);
+      println("diffType: " + diffType);
+      drawGame();
     }
   } 
   else {

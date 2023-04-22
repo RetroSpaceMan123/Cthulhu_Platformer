@@ -39,9 +39,6 @@ class Coin {
       player.coins++;
         coinSound.play();
       }
-      // for testing
-      if(isCollected){
-      println(isCollected);
-      }
+      
     }
   }

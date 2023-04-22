@@ -161,25 +161,25 @@ void drawGame(int diffType) {
 
   //Coins and platforms display
   /*for (int i = 0; i < levels[diffType].coins.length; i++) {
-    if (frameCount % 6 == 0) {
-      levels[diffType].coins[i].i = (levels[diffType].coins[i].i+1)%10;
-    }
-    levels[diffType].coins[i].display();
-  }
-
-  for (int i = 0; i < levels[diffType].platforms.length; i++) {
-    levels[diffType].platforms[i].display();
-  }
-  for (int i = 0; i < levels[diffType].covers.length; i++) {
-    levels[diffType].covers[i].display();
-  }
-
-  for (int i = 0; i < levels[diffType].walls.length; i++) {
-    levels[diffType].walls[i].display();
-  }*/
+   if (frameCount % 6 == 0) {
+   levels[diffType].coins[i].i = (levels[diffType].coins[i].i+1)%10;
+   }
+   levels[diffType].coins[i].display();
+   }
+   
+   for (int i = 0; i < levels[diffType].platforms.length; i++) {
+   levels[diffType].platforms[i].display();
+   }
+   for (int i = 0; i < levels[diffType].covers.length; i++) {
+   levels[diffType].covers[i].display();
+   }
+   
+   for (int i = 0; i < levels[diffType].walls.length; i++) {
+   levels[diffType].walls[i].display();
+   }*/
 
   levels[diffType].display();
-  
+
   player.display();
 
 
@@ -286,7 +286,16 @@ void drawGame(int diffType) {
 }
 
 void drawMainMenu() {
-  mainMenu.display();
+  background(bckg);
+
+  line(width/2, 0, width/2, height);
+
+  if (inCredits) {
+    credits.display();
+  } else {
+    mainMenu.display();
+  }
+
   if (music.isPlaying()) {
     music.stop();
   }
@@ -409,6 +418,19 @@ void setup() {
   menuButtons[3] = new ButtonUI(width/2, 500, 300, 42, color(100), new PImage(), quitText);
   mainMenu = new UI(menuButtons, menuText, new PImage[0], new float[0], new float[0]);
 
+  //Credits
+  Textbox[] creditText = new Textbox[6];
+  creditText[0] = new Textbox(width/2 - 100, 60, 48, "Constantia-Bold-32.vlw", "Credits");
+  creditText[1] = new Textbox(width/2 - 150, 162, 48, "Constantia-Bold-32.vlw", "Created By:");
+  creditText[2] = new Textbox(width/2 - 150, 244, 48, "Constantia-Bold-32.vlw", "Carlos Avila");
+  creditText[3] = new Textbox(width/2 - 150, 286, 48, "Constantia-Bold-32.vlw", "Eugene Gurary");
+  creditText[4] = new Textbox(width/2 - 150, 328, 48, "Constantia-Bold-32.vlw", "Peter Luchhino");
+  creditText[5] = new Textbox(width/2 - 150, 370, 48, "Constantia-Bold-32.vlw", "Bryan Torreblanca");
+  ButtonUI[] creditButton = new ButtonUI[1];
+  Textbox backText = new Textbox(width/2 - 40, 710, 32, "Constantia-Bold-32.vlw", "Back");
+  creditButton[0] = new ButtonUI(width/2, 700, 300, 42, color(100), new PImage(), backText);
+  credits = new UI(creditButton, creditText, new PImage[0], new float[0], new float[0]);
+
 
   gameOver = false;
   recentDeath = false;
@@ -416,7 +438,6 @@ void setup() {
 
 void draw() {
   if (inGame) {
-
     if (diff == Difficulty.TUTORIAL) {
       diffType = 0;
       drawGame(0);
@@ -428,7 +449,6 @@ void draw() {
       drawGame(2);
     }
   } else {
-    background(bckg);
     drawMainMenu();
   }
 }
@@ -568,6 +588,10 @@ void mousePressed() {
     } else {
       loop();
     }
+  } else if (inCredits) {
+    if (credits.buttons[0].isPressed()) {
+      inCredits = false;
+    }
   } else {
     if (mainMenu.buttons[0].isPressed()) {
       confirm.play();
@@ -586,7 +610,7 @@ void mousePressed() {
         mainMenu.buttons[1].textbox.Text = "Difficulty: Tutorial";
       }
     } else if (mainMenu.buttons[2].isPressed()) {
-      println("Load Credits Now!");
+      inCredits = true;
       confirm.play();
     } else if (mainMenu.buttons[3].isPressed()) {
       exit();

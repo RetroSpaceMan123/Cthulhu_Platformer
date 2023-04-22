@@ -205,12 +205,17 @@ void drawGame(int diffType) {
   covered = false;
 
   for (int i = 0; i < levels[diffType].covers.length; i++) {
-    boolean temp = player.xPos + 10 <= levels[diffType].covers[i].xPos + levels[diffType].covers[i].coverWidth && player.xPos - 15 >= levels[diffType].covers[i].xPos;
-    temp &= player.yPos - 18 >= levels[diffType].covers[i].yPos && player.yPos + 10 <= levels[diffType].covers[i].yPos + levels[diffType].covers[i].coverHeight;
-    covered |= temp;
+    covered = abs(player.xPos - (levels[diffType].covers[i].xPos)) <= levels[diffType].covers[i].coverWidth/2;
+    covered &= abs(player.yPos - (levels[diffType].covers[i].yPos)) <= levels[diffType].covers[i].coverHeight/2;
+   //println("Player X: " + player.xPos + " Player Y: " + player.yPos + " Cover X: " levels
+    if(covered) {
+      break;
+    }
   }
-
+  
   player.isInCover = covered;
+
+  
 
 
   //wall collision
@@ -318,23 +323,29 @@ void setup() {
   coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
   
   Wall[] wallsTutorial = new Wall[1];
-  wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
+  wallsTutorial[0] = new Wall(425, 440, 100, 100, 1);
   
   levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
 
   // initialize easy level
   // ================================= EASY ======================================
   
-  Coin[] coinsEasy = new Coin[6];
+  Wall[] wallsEasy = new Wall[1];
+  Coin[] coinsEasy = new Coin[1];
+  Cover[] coversEasy = new Cover[1];
+  Platform[] platformsEasy = new Platform[1];
   
-  Wall[] wallsEasy = new Wall[8];
+  wallsEasy[0] = new Wall(width/2, 750, 1050, 50, 3);
   
-  Cover[] coverEasy = new Cover[10];
+  coinsEasy[0] = new Coin(0, 0);
   
-  Platform[] platformEasy = new Platform[13];
+  platformsEasy[0] = new Platform(0, 0, 50, 50, 1);
+  
+  coversEasy[0] = new Cover(width/2, 690, 60, 80, 1);
   
   
-  levels[1] = new Level(coinsEasy, platformEasy, coverEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
+  
+  levels[1] = new Level(coinsEasy, platformsEasy, coversEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
   
 
   

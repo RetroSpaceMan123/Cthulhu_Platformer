@@ -18,8 +18,8 @@ class Cthulhu {
   }
   
   Cthulhu() {
-    xPos = player.xPos;
-    yPos = height/2 - 100;
+    xPos = width/2;
+    yPos = height/2+25;
     a = 0;
     d= 0;
     active = false;

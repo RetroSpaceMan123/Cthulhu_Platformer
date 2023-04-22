@@ -9,7 +9,7 @@ class Player {
   int k; //frame counter for death
   int defaultLives = 3;
   boolean walking = false, jumping = false, running = false, left = false, right = false, isOnPlatform = false, isOnWall = false, isInCover = false, isDead = false;
-  float xPos, yPos, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
+  float xPos = 0, yPos = 0, vx = 0, vy = 0, ax = 0, ay = .25, speed = 1.5f, jumpForce = 7.5f;
   Sprite idle, walk, jump, run, death;
 
   // added variable for checking if Cthulhu is peaking

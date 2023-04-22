@@ -6,10 +6,6 @@ Player player;
 Cthulhu cthulhu;
 PImage bckg;
 Level[] levels;
-Coin[] coins;
-Platform[] platforms;
-Cover[] cover;
-Wall[] walls;
 boolean covered, paused, gameOver, recentDeath, win, inGame, inCredits;
 int time;
 UI gameUI;
@@ -222,18 +218,6 @@ void drawGame(int diffType) {
     boolean temp = player.xPos + 10 > levels[diffType].walls[i].xPos - levels[diffType].walls[i].wallWidth/2 && player.xPos - 12 < levels[diffType].walls[i].xPos + levels[diffType].walls[i].wallWidth/2;
     temp &= player.yPos - 19 < levels[diffType].walls[i].yPos + levels[diffType].walls[i].wallHeight/2 && player.yPos + 16 > levels[diffType].walls[i].yPos - levels[diffType].walls[i].wallHeight/2;
 
-    /*
-    if(temp) {
-     stroke(#00FF00);
-     //line(player.xPos, player.yPos, walls[0].xPos - walls[0].wallWidth/2 - 11, player.yPos);
-     stroke(#FF0000);
-     //line(player.xPos, player.yPos, walls[0].xPos + walls[0].wallWidth/2 + 12, player.yPos);
-     stroke(#FF00FF);
-     //line(player.xPos, player.yPos, player.xPos, walls[0].yPos - walls[0].wallHeight/2 - 16.75);
-     stroke(#FFFF00);
-     //line(player.xPos, player.yPos, player.xPos, walls[0].yPos + walls[0].wallHeight/2 + 19.25);
-     }
-     */
 
     float leftSide = dist(player.xPos, player.yPos, levels[diffType].walls[i].xPos - levels[diffType].walls[i].wallWidth/2 - 11, player.yPos);
     float topSide = dist(player.xPos, player.yPos, player.xPos, levels[diffType].walls[i].yPos - levels[diffType].walls[i].wallHeight/2 - 16.75);
@@ -321,7 +305,6 @@ void setup() {
   frameRate(50);
   bckg = loadImage("background1.png");
   bckg.resize(1200, 800);
-  coins = new Coin[6];
   time = millis();
   win = false;
   diff = Difficulty.TUTORIAL;
@@ -329,53 +312,41 @@ void setup() {
 
   // level initialization
   levels = new Level[3];
-
-  //init
-  coins[0] = new Coin(400, 525);
-  coins[1] = new Coin(255, 650);
-  coins[2] = new Coin(100, 265);
-  coins[3] = new Coin(600, 360);
-  coins[4] = new Coin(200, 360);
-  coins[5] = new Coin(700, 265);
-  platforms = new Platform[6];
-  platforms[0] = new Platform(400, 600, 200, 100, 1);
-  platforms[1] = new Platform(600, 450, 200, 50, 1);
-  platforms[2] = new Platform(200, 450, 200, 50, 1);
-  platforms[3] = new Platform(100, 350, 100, 50, 1);
-  platforms[4] = new Platform(250, 700, 100, 50, 1);
-  platforms[5] = new Platform(700, 350, 100, 50, 1);
-
-  cover  = new Cover[3];
-  //cover[0] = new Cover(450, 470, 40, 80, 155);
-  cover[0] = new Cover(300, 470, 60, 80, 1);
-  cover[1] = new Cover(240, 345, 60, 80, 1);
-  cover[2] = new Cover(500, 345, 60, 80, 1);
-
-  walls = new Wall[1];
-  walls[0] = new Wall(425, 440, 100, 100, 4);
-  // Level(Coin[] cn, Platform[] pf, Cover[] cv, Wall[] wl, int bg, Player plyr, float x, float y)
-
-  levels[1] = new Level(coins, platforms, cover, walls, 1, (float)(width/2), (float)(height/2));
-
-
-  // initialize tutorial level
+  
+    // initialize tutorial level
   // ========================== TUTORIAL =================================
-  //Player playerTutorial = new Player(10000, 0, width/2, height/2);
-
+  
   Coin[] coinsTutorial = new Coin[1];
   coinsTutorial[0] = new Coin(255, 650);
 
   Platform[] platformsTutorial = new Platform[2];
   platformsTutorial[0] = new Platform(400, 600, 200, 100, 1);
   platformsTutorial[1] = new Platform(600, 450, 200, 50, 1);
+  
   Cover[] coverTutorial = new Cover[1];
   coverTutorial[0] = new Cover(300, 470, 60, 80, 1);
+  
   Wall[] wallsTutorial = new Wall[1];
   wallsTutorial[0] = new Wall(425, 440, 100, 100, 4);
+  
+  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial,1, (float)(width/2), (float)(height/2));
 
-  levels[0] = new Level(coinsTutorial, platformsTutorial, coverTutorial, wallsTutorial, 1, (float)(width/2), (float)(height/2));
+  // initialize easy level
+  // ================================= EASY ======================================
+  
+  Coin[] coinsEasy = new Coin[6];
+  
+  Wall[] wallsEasy = new Wall[8];
+  
+  Cover[] coverEasy = new Cover[10];
+  
+  Platform[] platformEasy = new Platform[13];
+  
+  
+  levels[1] = new Level(coinsEasy, platformEasy, coverEasy, wallsEasy, 3, (float)(width/2), (float)(height/2));
+  
 
-
+  
   //interval creation
   interval = random(5000, 6000); // generate a random interval between 2 and 5 seconds
   startTime = 0;
